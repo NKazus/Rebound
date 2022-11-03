@@ -4,7 +4,6 @@ public class Refraction : MonoBehaviour
 {
     private IRefraction _refraction;
     private ObjectColor _objectColor;
-    //ссылка на компонент визуала с анимацией
 
     private void Awake()
     {
@@ -12,12 +11,20 @@ public class Refraction : MonoBehaviour
         _objectColor = GetComponent<ObjectColor>();
     }
 
-    private void OnTriggerExit2D(Collider2D collision)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Player") && _refraction != null)
         {
             GlobalEventManager.CalculateSpeed(_refraction.Refract, false);
-            //вызов анимации
+            _objectColor.ActivateGlowEffect(true);
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {            
+            _objectColor.ActivateGlowEffect(false);
         }
     }
 

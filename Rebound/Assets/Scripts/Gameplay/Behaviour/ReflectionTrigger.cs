@@ -4,7 +4,7 @@ public class ReflectionTrigger : MonoBehaviour
 {
     private ObjectColor _triggerColor;
     private float _activationTime = 1f;
-    private Color _currentTriggerColor;
+    private Color _currentTriggerColor;//чтобы не дергать при коллизии компонент цвета
 
     private void Awake()
     {
@@ -17,6 +17,7 @@ public class ReflectionTrigger : MonoBehaviour
         if (collision.gameObject.CompareTag("Player"))
         {
             GlobalEventManager.UpdateReflection(_activationTime, _currentTriggerColor);
+            //интенсивность и анимация исчезновения
             PoolManager.PutGameObjectToPool(gameObject);
         }
     }
