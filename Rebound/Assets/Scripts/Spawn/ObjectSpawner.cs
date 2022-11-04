@@ -63,7 +63,7 @@ public class ObjectSpawner : MonoBehaviour, GlobalSpeedController.IGlobalScroll
 
     protected virtual void SetSpawnObject(GameObject spawnObject)
     {
-        spawnObject.transform.localScale = new Vector3(RandomExtentions.NextFloat(randomizer, minScale, maxScale), 0.1f, 1f);
+        spawnObject.transform.localScale = new Vector3(RandomExtentions.NextFloat(randomizer, minScale, maxScale), 1f, 1f);
         spawnObject.GetComponent<Refraction>().SetObjectParameters(RandomExtentions.NextFloat(randomizer, 0f, 1f));
     }
 

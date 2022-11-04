@@ -2,6 +2,9 @@ using UnityEngine;
 
 public class InitialMove : MonoBehaviour
 {
+    [SerializeField] private PlayerColor playerColor;
+
+    private LineRenderer _lineRenderer;
     private Camera _mainCamera;
     private Vector3 _playerPosition;
     private Vector3 _initialTouchPosition;
@@ -14,6 +17,9 @@ public class InitialMove : MonoBehaviour
     {
         _mainCamera = Camera.main;
         _playerPosition = transform.position;
+
+        _lineRenderer = GetComponent<LineRenderer>();
+
         var configInfo = Resources.Load<InitConfig>("InitConfig");
         _maxInitialAngle = configInfo.MaxInitialAngle;
         _defaultDirection = Quaternion.AngleAxis(-_maxInitialAngle, Vector3.forward) * Vector3.up;
@@ -29,12 +35,12 @@ public class InitialMove : MonoBehaviour
         if (Input.GetMouseButtonUp(0))
         {
             GlobalEventManager.InitializeMovement(_initialDirection);
-            enabled = false;
+            gameObject.SetActive(false);
         }     
     }
 
     private void CalculateDirection()
-    {
+    {        
         _initialTouchPosition = _mainCamera.ScreenToWorldPoint(Input.mousePosition);
         _initialTouchPosition.z = 0f;
         _currentDirection = _initialTouchPosition - _playerPosition;
@@ -47,6 +53,14 @@ public class InitialMove : MonoBehaviour
             _initialDirection = _defaultDirection;
             _initialDirection.x *= Mathf.Sign(_currentDirection.x);
         }
+        ShareDirection();
+    }
+
+    private void ShareDirection()
+    {
+
+        _lineRenderer.SetPosition(0, _playerPosition);
+        _lineRenderer.SetPosition(1, _initialDirection.normalized * 2f + _playerPosition);
     }
 
 }

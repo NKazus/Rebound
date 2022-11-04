@@ -4,19 +4,17 @@ public class ReflectionTrigger : MonoBehaviour
 {
     private ObjectColor _triggerColor;
     private float _activationTime = 1f;
-    private Color _currentTriggerColor;//чтобы не дергать при коллизии компонент цвета
 
     private void Awake()
     {
         _triggerColor = GetComponent<ObjectColor>();
-        _currentTriggerColor = Color.red;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            GlobalEventManager.UpdateReflection(_activationTime, _currentTriggerColor);
+            GlobalEventManager.UpdateReflection(_activationTime, _triggerColor.GetColor());
             //интенсивность и анимация исчезновения
             PoolManager.PutGameObjectToPool(gameObject);
         }
@@ -25,7 +23,7 @@ public class ReflectionTrigger : MonoBehaviour
     public void SetTriggerParameters(float duration, float colorValue)
     {
         _activationTime = duration;
-        _currentTriggerColor = _triggerColor.SetColor(colorValue);
+        _triggerColor.SetColor(colorValue);
     }
 
 }

@@ -11,7 +11,6 @@ public class Reflection : MonoBehaviour
 
     private void OnEnable()
     {
-        _objectColor.SetColor(ReflectionController.ReflectionState.ReflectionColor);
         ReflectionController.ReflectionUpdateEvent += UpdateReflection;
     }
 
@@ -32,9 +31,9 @@ public class Reflection : MonoBehaviour
         }
     }
 
-    private void UpdateReflection(Color color)
+    private void UpdateReflection(float intensity)
     {
-        _objectColor.SetColor(color);
+        _objectColor.SetColor(intensity);
     }
 
     private void OnDisable()

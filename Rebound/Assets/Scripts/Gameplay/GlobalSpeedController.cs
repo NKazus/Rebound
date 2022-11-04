@@ -7,7 +7,7 @@ public class GlobalSpeedController : MonoBehaviour
 
     
     [SerializeField] private PlayerMovement player;
-    [SerializeField] private PlayerColor playerColor;
+    [SerializeField] private ObjectColor playerColor;
 
     private float _globalSpeed;
     private float _playerSpeed;
@@ -78,7 +78,7 @@ public class GlobalSpeedController : MonoBehaviour
     private void ShareSpeedChanges()
     {
         player.SetPlayerSpeedAbs(_playerSpeed);
-        playerColor.ResetPlayerColor(_playerSpeed/_globalSpeed);
+        playerColor.SetColor(_playerSpeed/_globalSpeed);
         GlobalEventManager.UpdateScrollingSpeed(ScrollSpeed);
     }
 
