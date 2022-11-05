@@ -2,8 +2,6 @@ using UnityEngine;
 
 public class InitialMove : MonoBehaviour
 {
-    [SerializeField] private PlayerColor playerColor;
-
     private LineRenderer _lineRenderer;
     private Camera _mainCamera;
     private Vector3 _playerPosition;
@@ -58,7 +56,6 @@ public class InitialMove : MonoBehaviour
 
     private void ShareDirection()
     {
-
         _lineRenderer.SetPosition(0, _playerPosition);
         _lineRenderer.SetPosition(1, _initialDirection.normalized * 2f + _playerPosition);
     }

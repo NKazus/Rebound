@@ -1,12 +1,15 @@
+using DG.Tweening;
 using UnityEngine;
 
 public class Reflection : MonoBehaviour
 {
     private ObjectColor _objectColor;
+    Transform _transform;
 
     private void Awake()
     {
         _objectColor = GetComponent<ObjectColor>();
+        _transform = transform;
     }
 
     private void OnEnable()
@@ -18,16 +21,9 @@ public class Reflection : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         { 
-            GlobalEventManager.CalculateSpeed(ReflectionController.ReflectionState.Reflect, true);
-            _objectColor.ActivateGlowEffect(true);
-        }
-    }
-
-    private void OnCollisionExit2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("Player"))
-        {
-            _objectColor.ActivateGlowEffect(false);
+            GlobalEventManager.CalculateSpeed(ReflectionController.ReflectionState.Reflect, true);            
+            _objectColor.ActivateGlowEffect(ReflectionController.BaseReflection.IsActiveState);
+            _transform.DOPunchScale(new Vector3(0.2f, 0, 0), 0.1f, 5);
         }
     }
 

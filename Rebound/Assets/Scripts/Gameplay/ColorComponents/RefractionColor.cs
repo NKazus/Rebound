@@ -1,3 +1,4 @@
+using DG.Tweening;
 using UnityEngine;
 
 public class RefractionColor : ObjectColor// + TriggerColor
@@ -8,6 +9,6 @@ public class RefractionColor : ObjectColor// + TriggerColor
     public override void SetColor(float interpolation)
     {
         currentColor = Color.Lerp(primaryColor, secondaryColor, interpolation);
-        objectMaterial.SetColor("_Color", currentColor * intensity);
+        objectMaterial.DOColor(currentColor * intensity, "_Color", 0.1f);
     }
 }

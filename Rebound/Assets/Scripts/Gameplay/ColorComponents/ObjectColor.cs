@@ -1,3 +1,4 @@
+using DG.Tweening;
 using UnityEngine;
 
 public abstract class ObjectColor : MonoBehaviour
@@ -18,15 +19,15 @@ public abstract class ObjectColor : MonoBehaviour
 
     public abstract void SetColor(float interpolation);
 
-    public void ActivateGlowEffect(bool isActive)//refraction
+    public virtual void ActivateGlowEffect(bool isActive)
     {
         if (isActive)
         {
-            objectMaterial.SetFloat("_GlowValue", 1f);//постепенно
+            objectMaterial.DOFloat(1f, "_GlowValue", 0.1f);
         }
         else
         {
-            objectMaterial.SetFloat("_GlowValue", 0f);
+            objectMaterial.DOFloat(0f, "_GlowValue", 0.1f);
         }
     }
 

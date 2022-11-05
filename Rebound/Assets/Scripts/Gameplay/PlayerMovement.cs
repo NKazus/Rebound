@@ -1,30 +1,56 @@
+using DG.Tweening;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
     private Rigidbody2D _playerRigidBody;
+    private Transform _transform;
     private float _movementSpeedAbs;
     private float _movementSpeedSign;
 
     private void Awake()
     {
         _playerRigidBody = GetComponent<Rigidbody2D>();
+        _transform = transform;
+    }
+
+    private void SetPlayerSpeed()
+    {
+        _playerRigidBody.velocity = new Vector2(_movementSpeedSign * _movementSpeedAbs, 0f);
     }
 
     public void ReversePlayerSpeedSign()
     {
         _movementSpeedSign = -_movementSpeedSign;
-        _playerRigidBody.velocity = new Vector2(_movementSpeedSign * _movementSpeedAbs, 0f);
+        SetPlayerSpeed();
     }
 
     public void SetPlayerSpeedAbs(float newSpeedAbs)
     {
         _movementSpeedAbs = newSpeedAbs;
-        _playerRigidBody.velocity = new Vector2(_movementSpeedSign * _movementSpeedAbs, 0f);
+        SetPlayerSpeed();
     }
 
     public void SetInitialSpeedSign(float initialSpeedSign)
     {
         _movementSpeedSign = initialSpeedSign;
+    }
+
+    public void Eliminate()
+    {
+        DOTween.Sequence()
+            .Append(_transform.DOShakeScale(0.3f, 0.5f, 5, 50))
+            .Append(_transform.DOScale(0f, 0.1f))
+            .OnComplete(() => gameObject.SetActive(false));
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        _transform.DOScale(0.8f, 0.05f);
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        _transform.DOScale(1f, 0.05f);
     }
 }

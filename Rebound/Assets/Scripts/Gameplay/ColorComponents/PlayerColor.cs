@@ -1,4 +1,4 @@
-
+using DG.Tweening;
 using UnityEngine;
 
 public class PlayerColor : ObjectColor
@@ -26,6 +26,7 @@ public class PlayerColor : ObjectColor
         _interpolation = (_currentAngle - _minDeltaAngle) % _intervalLength;
         currentColor = Color.Lerp(colors[_leftIntervalIndex], colors[_leftIntervalIndex + 1], _interpolation);
         currentColor.a = 1f;
-        objectMaterial.SetColor("_Color", currentColor * intensity);
+        objectMaterial.DOColor(currentColor * intensity, "_Color", 0.2f);
     }
+
 }

@@ -55,6 +55,7 @@ public class GlobalSpeedController : MonoBehaviour
         _calculatedScrollSpeed = calculate(ScrollSpeed);
         if (_calculatedScrollSpeed < 0)
         {
+            player.Eliminate();
             GlobalEventManager.EliminatePlayer();
             ScrollSpeed = _playerSpeed = 0f;
             ShareSpeedChanges();

@@ -13,7 +13,6 @@ public class GlobalEventManager : MonoBehaviour
     public static void InitializeMovement(Vector3 initialDirection)// initial move
     {
         InitializeSpeedEvent?.Invoke(initialDirection);
-        //начало спавна
         GameStateEvent?.Invoke(true);
     }
 
@@ -25,18 +24,15 @@ public class GlobalEventManager : MonoBehaviour
     public static void CalculateSpeed(Func<float,float> speedHandler, bool reflect)//reflection / refraction
     {
         CalculateSpeedEvent?.Invoke(speedHandler, reflect);
-	//вызов ивента, на который подписаны обработчики анимации
     }
 
-    public static void UpdateReflection(float duration, Color triggerColor)
+    public static void UpdateReflection(float duration, Color triggerColor)//reflection trigger
     {
         ActivateReflectionEvent?.Invoke(duration, triggerColor);
     }
 
-    public static void EliminatePlayer()//триггерится смертельным препятствием
+    public static void EliminatePlayer()
     {
-        //вызвать метод у спид контроллера, который отключит игрока
-        //остановка спавна
         GameStateEvent?.Invoke(false);
     }
 }
