@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[RequireComponent(typeof(ObjectColor), typeof(IRefraction))]
 public class Refraction : MonoBehaviour
 {
     private IRefraction _refraction;

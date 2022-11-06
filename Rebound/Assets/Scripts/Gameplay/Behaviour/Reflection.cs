@@ -1,15 +1,18 @@
 using DG.Tweening;
 using UnityEngine;
 
+[RequireComponent(typeof(ObjectColor))]
 public class Reflection : MonoBehaviour
 {
     private ObjectColor _objectColor;
-    Transform _transform;
+    private Transform _transform;
+    private Tween _punchScaleTween;
 
     private void Awake()
     {
         _objectColor = GetComponent<ObjectColor>();
         _transform = transform;
+        _punchScaleTween = _transform.DOPunchScale(new Vector3(0.2f, 0, 0), 0.1f, 5);
     }
 
     private void OnEnable()
@@ -23,7 +26,7 @@ public class Reflection : MonoBehaviour
         { 
             GlobalEventManager.CalculateSpeed(ReflectionController.ReflectionState.Reflect, true);            
             _objectColor.ActivateGlowEffect(ReflectionController.BaseReflection.IsActiveState);
-            _transform.DOPunchScale(new Vector3(0.2f, 0, 0), 0.1f, 5);
+            _punchScaleTween.Play();
         }
     }
 

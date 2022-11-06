@@ -9,6 +9,6 @@ public class RefractionColor : ObjectColor// + TriggerColor
     public override void SetColor(float interpolation)
     {
         currentColor = Color.Lerp(primaryColor, secondaryColor, interpolation);
-        objectMaterial.DOColor(currentColor * intensity, "_Color", 0.1f);
+        objectMaterial.DOColor(currentColor * intensity, "_Color", 0.1f).Play();
     }
 }

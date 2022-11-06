@@ -14,6 +14,11 @@ public class PlayerMovement : MonoBehaviour
         _transform = transform;
     }
 
+    private void OnEnable()
+    {
+        GlobalEventManager.GameStateEvent += Eliminate;
+    }
+
     private void SetPlayerSpeed()
     {
         _playerRigidBody.velocity = new Vector2(_movementSpeedSign * _movementSpeedAbs, 0f);
@@ -36,21 +41,30 @@ public class PlayerMovement : MonoBehaviour
         _movementSpeedSign = initialSpeedSign;
     }
 
-    public void Eliminate()
+    public void Eliminate(bool isActive)
     {
-        DOTween.Sequence()
-            .Append(_transform.DOShakeScale(0.3f, 0.5f, 5, 50))
-            .Append(_transform.DOScale(0f, 0.1f))
-            .OnComplete(() => gameObject.SetActive(false));
+        if (!isActive)
+        {
+            _playerRigidBody.velocity = Vector2.zero;
+            DOTween.Sequence()
+                .Append(_transform.DOShakeScale(0.3f, 0.5f, 5, 50))
+                .Append(_transform.DOScale(0f, 0.1f))
+                .OnComplete(() => gameObject.SetActive(false));
+        }
+    }
+
+    private void OnDisable()
+    {
+        GlobalEventManager.GameStateEvent -= Eliminate;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        _transform.DOScale(0.8f, 0.05f);
+        _transform.DOScale(0.8f, 0.05f).Play();
     }
 
     private void OnCollisionExit2D(Collision2D collision)
     {
-        _transform.DOScale(1f, 0.05f);
+        _transform.DOScale(1f, 0.05f).Play();
     }
 }

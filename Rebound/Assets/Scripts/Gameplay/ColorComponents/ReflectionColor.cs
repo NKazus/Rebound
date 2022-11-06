@@ -11,7 +11,7 @@ public class ReflectionColor : ObjectColor
     public override void SetColor(float intensityModifyer)
     {
         currentColor = ReflectionController.ReflectionState.ReflectionColor;
-        objectMaterial.DOColor(ReflectionController.ReflectionState.ReflectionColor * intensity, "_Color", 0.1f);
+        objectMaterial.DOColor(ReflectionController.ReflectionState.ReflectionColor * intensity, "_Color", 0.1f).Play();
     }
 
     public override void ActivateGlowEffect(bool isActive)

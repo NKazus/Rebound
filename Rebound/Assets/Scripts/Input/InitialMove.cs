@@ -11,6 +11,7 @@ public class InitialMove : MonoBehaviour
     private Vector3 _initialDirection; //итоговый вектор, с которого берутся параметры
     private float _maxInitialAngle = 75;
 
+
     private void Awake()
     {
         _mainCamera = Camera.main;
@@ -31,7 +32,7 @@ public class InitialMove : MonoBehaviour
             CalculateDirection();
         }
         if (Input.GetMouseButtonUp(0))
-        {
+        {            
             GlobalEventManager.InitializeMovement(_initialDirection);
             gameObject.SetActive(false);
         }     
@@ -51,10 +52,10 @@ public class InitialMove : MonoBehaviour
             _initialDirection = _defaultDirection;
             _initialDirection.x *= Mathf.Sign(_currentDirection.x);
         }
-        ShareDirection();
+        ShowDirection();
     }
 
-    private void ShareDirection()
+    private void ShowDirection()
     {
         _lineRenderer.SetPosition(0, _playerPosition);
         _lineRenderer.SetPosition(1, _initialDirection.normalized * 2f + _playerPosition);

@@ -31,7 +31,7 @@ public class GlobalEventManager : MonoBehaviour
         ActivateReflectionEvent?.Invoke(duration, triggerColor);
     }
 
-    public static void EliminatePlayer()
+    public static void EliminatePlayer()//speed controller
     {
         GameStateEvent?.Invoke(false);
     }

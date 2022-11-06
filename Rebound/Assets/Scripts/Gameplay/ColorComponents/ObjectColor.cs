@@ -23,11 +23,11 @@ public abstract class ObjectColor : MonoBehaviour
     {
         if (isActive)
         {
-            objectMaterial.DOFloat(1f, "_GlowValue", 0.1f);
+            objectMaterial.DOFloat(1f, "_GlowValue", 0.1f).Play();
         }
         else
         {
-            objectMaterial.DOFloat(0f, "_GlowValue", 0.1f);
+            objectMaterial.DOFloat(0f, "_GlowValue", 0.1f).Play();
         }
     }
 

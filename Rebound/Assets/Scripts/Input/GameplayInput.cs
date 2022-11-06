@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameplayInput : MonoBehaviour
 {
@@ -27,6 +28,7 @@ public class GameplayInput : MonoBehaviour
         else
         {
             GlobalUpdateManager.GlobalUpdateEvent -= LocalUpdate;
+            GlobalUpdateManager.GlobalUpdateEvent += LocalUpdateReload;
         }
     }
 
@@ -41,8 +43,17 @@ public class GameplayInput : MonoBehaviour
         }
     }
 
+    private void LocalUpdateReload()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
+    }
+
     private void OnDisable()
     {
         GlobalEventManager.GameStateEvent -= ChangeInputState;
+        GlobalUpdateManager.GlobalUpdateEvent -= LocalUpdateReload;
     }
 }

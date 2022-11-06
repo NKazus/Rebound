@@ -6,7 +6,6 @@ public class BackgroundScroller : MonoBehaviour, GlobalSpeedController.IGlobalSc
     private Rigidbody2D _backgroundRigidbody;
     private float _backgroundHeight;
     private float _backgroundScrollSpeed;
-    private float _verticalScale;
     private Vector2 _resetPosition;
     private Transform _localTransform;
 
@@ -19,19 +18,18 @@ public class BackgroundScroller : MonoBehaviour, GlobalSpeedController.IGlobalSc
         _localTransform = transform;
         _backgroundHeight = _backgroundCollider.size.y;
         _backgroundCollider.enabled = false;
-        _verticalScale = transform.localScale.y;
-        _resetPosition = new Vector2(0, _backgroundHeight * _verticalScale * 2f);
+        _resetPosition = new Vector2(0, _backgroundHeight * _localTransform.localScale.y * 2f);
     }
 
     private void OnEnable()
     {
-        GlobalUpdateManager.GlobalUpdateEvent+=LocalUpdate;
-        GlobalEventManager.ResetScrollingSpeedEvent+=SetScrollSpeed;
+        GlobalUpdateManager.GlobalUpdateEvent += LocalUpdate;
+        GlobalEventManager.ResetScrollingSpeedEvent += SetScrollSpeed;
     }
 
     private void LocalUpdate()
     {
-        if(_localTransform.position.y < -_backgroundHeight * _verticalScale)
+        if(_localTransform.position.y < -_backgroundHeight * _localTransform.localScale.y)
         {
             _localTransform.position = (Vector2)_localTransform.position + _resetPosition;
         }
