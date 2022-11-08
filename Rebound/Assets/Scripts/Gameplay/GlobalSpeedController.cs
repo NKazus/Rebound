@@ -4,10 +4,9 @@ using UnityEngine;
 public class GlobalSpeedController : MonoBehaviour
 {
     public static float ScrollSpeed { get; private set; }
-
     
     [SerializeField] private PlayerMovement player;
-    [SerializeField] private PlayerColor playerColor;
+    [SerializeField] private ObjectColor playerColor;
 
     private float _globalSpeed;
     private float _playerSpeed;
@@ -55,9 +54,9 @@ public class GlobalSpeedController : MonoBehaviour
         _calculatedScrollSpeed = calculate(ScrollSpeed);
         if (_calculatedScrollSpeed < 0)
         {
+            GlobalEventManager.CalculateSpeedEvent -= UpdateSpeedValues;
+            GlobalEventManager.UpdateScrollingSpeed(_minScrollSpeed);
             GlobalEventManager.EliminatePlayer();
-            ScrollSpeed = _playerSpeed = 0f;
-            ShareSpeedChanges();
             return;
         }
         ScrollSpeed = Mathf.Clamp(_calculatedScrollSpeed, _minScrollSpeed, _maxScrollSpeed);
@@ -78,7 +77,7 @@ public class GlobalSpeedController : MonoBehaviour
     private void ShareSpeedChanges()
     {
         player.SetPlayerSpeedAbs(_playerSpeed);
-        playerColor.ResetPlayerColor(_playerSpeed/_globalSpeed);
+        playerColor.SetColor(_playerSpeed/_globalSpeed);
         GlobalEventManager.UpdateScrollingSpeed(ScrollSpeed);
     }
 

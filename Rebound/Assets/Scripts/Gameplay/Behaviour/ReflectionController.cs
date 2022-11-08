@@ -1,8 +1,10 @@
+using System;
 using UnityEngine;
 
 public class ReflectionController : MonoBehaviour
 {
     public static BaseReflection ReflectionState { get; private set; } = new SimpleReflection(Color.white);
+    public static event Action<float> ReflectionUpdateEvent;
 
     private float _remainingTime = 0f;
 
@@ -18,6 +20,7 @@ public class ReflectionController : MonoBehaviour
         if (_remainingTime < 0f)
         {
             ReflectionState = ReflectionState.SwitchMode(Color.white);
+            ReflectionUpdateEvent?.Invoke(1f);
             GlobalUpdateManager.GlobalFixedUpdateEvent -= LocalFixedUpdate;
         }     
     }
@@ -27,6 +30,7 @@ public class ReflectionController : MonoBehaviour
         if (!BaseReflection.IsActiveState)
         {
             ReflectionState = ReflectionState.SwitchMode(triggerColor);
+            ReflectionUpdateEvent?.Invoke(activationTime);
             GlobalUpdateManager.GlobalFixedUpdateEvent += LocalFixedUpdate;
         }
         _remainingTime = _remainingTime > activationTime ? _remainingTime : activationTime;
@@ -38,7 +42,7 @@ public class ReflectionController : MonoBehaviour
         GlobalUpdateManager.GlobalFixedUpdateEvent -= LocalFixedUpdate;
     }
 
-
+    #region ReflectionMode
     public abstract class BaseReflection
     {
         public static bool IsActiveState { get; protected set; }
@@ -60,4 +64,5 @@ public class ReflectionController : MonoBehaviour
         public override float Reflect(float value) { return value; }
         public override BaseReflection SwitchMode(Color value) { return new ReducingReflection(value); }
     }
+    #endregion
 }
