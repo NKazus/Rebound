@@ -26,7 +26,7 @@ public class PlayerColor : ObjectColor
         _interpolation = (_currentAngle - _minDeltaAngle) % _intervalLength;
         currentColor = Color.Lerp(colors[_leftIntervalIndex], colors[_leftIntervalIndex + 1], _interpolation);
         currentColor.a = 1f;
-        objectMaterial.DOColor(currentColor * intensity, "_Color", 0.2f).Play();
+        objectMaterial.DOColor(currentColor * intensity, "_Color", 0.2f).SetLink(gameObject).Play();
     }
 
 }

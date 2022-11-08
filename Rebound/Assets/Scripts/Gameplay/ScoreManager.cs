@@ -1,3 +1,4 @@
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 
@@ -7,6 +8,7 @@ public class ScoreManager : MonoBehaviour, GlobalSpeedController.IGlobalScroll
     [SerializeField] private GameObject scorePanel; 
     [SerializeField] private TextMeshProUGUI scoreUI;
     [SerializeField] private TextMeshProUGUI highScoreUI;
+    [SerializeField] private TextMeshProUGUI highScoreUIConst;
 
     private GameMessage _gameMessage;
     private float _scorePerSecond;
@@ -16,7 +18,6 @@ public class ScoreManager : MonoBehaviour, GlobalSpeedController.IGlobalScroll
 
     private void Awake()
     {
-        //PlayerPrefs.DeleteAll();
         _gameMessage = GetComponent<GameMessage>();
         _highScoreCount = CheckHighScore();
         highScoreUI.text = ((int)_highScoreCount).ToString();
@@ -37,6 +38,7 @@ public class ScoreManager : MonoBehaviour, GlobalSpeedController.IGlobalScroll
             _highScoreCount = _scoreCount;
             GlobalUpdateManager.GlobalFixedUpdateEvent -= LocalFixedUpdateScore;
             GlobalUpdateManager.GlobalFixedUpdateEvent += LocalFixedUpdateHighScore;
+            ChangeScoreColor();
         }
     }
 
@@ -44,6 +46,18 @@ public class ScoreManager : MonoBehaviour, GlobalSpeedController.IGlobalScroll
     {
         _highScoreCount += _scorePerSecond * Time.fixedDeltaTime;
         scoreUI.text = highScoreUI.text = ((int)_highScoreCount).ToString();
+    }
+
+    private void ChangeScoreColor()
+    {
+        DOTween.Sequence().SetId(this)
+            .Append(highScoreUI.DOScale(1.5f, 0.3f))
+            .Join(highScoreUI.DOColor(scoreUI.color, 0.3f))
+            .Append(highScoreUI.DOScale(1f, 0.3f));
+        DOTween.Sequence().SetId(this)
+            .Append(highScoreUIConst.DOScale(1.5f, 0.3f))
+            .Join(highScoreUIConst.DOColor(scoreUI.color, 0.3f))
+            .Append(highScoreUIConst.DOScale(1f, 0.3f));
     }
 
     private void ChangeScoreState(bool isActive)
@@ -89,6 +103,7 @@ public class ScoreManager : MonoBehaviour, GlobalSpeedController.IGlobalScroll
     {
         GlobalEventManager.ResetScrollingSpeedEvent -= SetScrollSpeed;
         GlobalEventManager.GameStateEvent -= ChangeScoreState;
+        DOTween.Kill(this);
     }
 
     public void SetScrollSpeed(float scrollSpeed)

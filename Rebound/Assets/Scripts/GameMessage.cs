@@ -4,14 +4,18 @@ using UnityEngine;
 
 public class GameMessage : MonoBehaviour
 {
+    private const string INITIAL_MESSAGE = "Choose direction";
+    private const string REPLAY_MESSAGE = "Tap to replay";
+    private const string HIGH_SCORE_MESSAGE = "New high score!";
+
     [SerializeField] private TextMeshProUGUI startMessage;
     [SerializeField] private TextMeshProUGUI newScoreMessage;
     private Tween _textScaleTween;
 
     private void Awake()
     {
-        startMessage.text = "Choose direction";
-        _textScaleTween = DOTween.Sequence()
+        startMessage.text = INITIAL_MESSAGE;
+        _textScaleTween = DOTween.Sequence().SetId(this)
             .Append(startMessage.DOScale(1.5f, 1f))
             .Append(startMessage.DOScale(1f, 1f))
             .SetLoops(-1);
@@ -27,13 +31,13 @@ public class GameMessage : MonoBehaviour
         if (isActive)
         {
             _textScaleTween.Pause();
-            startMessage.DOFade(0f, 0.3f).Play().OnComplete(() => startMessage.enabled = false);
+            startMessage.DOFade(0f, 0.3f).SetId(this).Play().OnComplete(() => startMessage.enabled = false);
         }
         else
         {
             startMessage.enabled = true;
-            startMessage.text = "Tap to replay";
-            startMessage.DOFade(1f, 1f).Play();
+            startMessage.text = REPLAY_MESSAGE;
+            startMessage.DOFade(1f, 1f).SetId(this).Play();
             _textScaleTween.Play();
         }
     }
@@ -41,12 +45,12 @@ public class GameMessage : MonoBehaviour
     private void OnDisable()
     {
         GlobalEventManager.GameStateEvent -= SetMessage;
-        _textScaleTween.Kill();
+        DOTween.Kill(this);
     }
 
     public void ShowNewScoreMessage()
     {
         newScoreMessage.enabled = true;
-        newScoreMessage.DOText("New high score!", 1f).SetLink(gameObject).Play();
+        newScoreMessage.DOText(HIGH_SCORE_MESSAGE, 1f).SetId(this).Play();
     }
 }

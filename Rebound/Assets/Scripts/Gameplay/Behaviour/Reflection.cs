@@ -12,7 +12,7 @@ public class Reflection : MonoBehaviour
     {
         _objectColor = GetComponent<ObjectColor>();
         _transform = transform;
-        _punchScaleTween = _transform.DOPunchScale(new Vector3(0.2f, 0, 0), 0.1f, 5);
+        _punchScaleTween = _transform.DOPunchScale(new Vector3(0.2f, 0, 0), 0.1f, 5).SetLink(gameObject);
     }
 
     private void OnEnable()

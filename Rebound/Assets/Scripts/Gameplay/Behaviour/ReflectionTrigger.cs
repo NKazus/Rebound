@@ -13,7 +13,7 @@ public class ReflectionTrigger : MonoBehaviour
     {
         _transform = transform;
         _triggerColor = GetComponent<ObjectColor>();
-        _shakeScaleTween = _transform.DOShakeScale(0.5f, 0.5f, 10, 50).OnComplete(() => PoolManager.PutGameObjectToPool(gameObject));
+        _shakeScaleTween = _transform.DOShakeScale(0.5f, 0.5f, 10, 50).SetLink(gameObject).OnComplete(() => PoolManager.PutGameObjectToPool(gameObject));
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
