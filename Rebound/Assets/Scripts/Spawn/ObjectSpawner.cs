@@ -2,8 +2,9 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
+using Zenject;
 
-public class ObjectSpawner : MonoBehaviour, GlobalSpeedController.IGlobalScroll
+public class ObjectSpawner : MonoBehaviour, IGlobalScroll
 {
     [SerializeField] protected GameObject[] spawnObjectsPrefabs;
     [Header("Position Offset:")]
@@ -23,12 +24,13 @@ public class ObjectSpawner : MonoBehaviour, GlobalSpeedController.IGlobalScroll
     private float _initialSpeedModifyer;
     private float _currentSpawnTime = 5f;   
     private int _spawnObjectsCount;
+    [Inject] private PoolManager _pool;
+    [Inject] private InitConfig _initConfig;
 
-
+    #region MONO
     protected void Awake()
     {
-        var configInfo = Resources.Load<InitConfig>("InitConfig");
-        _initialSpeedModifyer = configInfo.InitialGlobalSpeed;
+        _initialSpeedModifyer = _initConfig.InitialGlobalSpeed;
 
         randomizer = new System.Random();
         _spawnObjectsCount = spawnObjectsPrefabs.Length;
@@ -38,6 +40,7 @@ public class ObjectSpawner : MonoBehaviour, GlobalSpeedController.IGlobalScroll
     {
         spawnerPosition = transform.position;
     }
+    #endregion
 
     public void StartSpawning(CancellationToken spawnToken)
     {
@@ -54,7 +57,7 @@ public class ObjectSpawner : MonoBehaviour, GlobalSpeedController.IGlobalScroll
         await Task.Delay(TimeSpan.FromSeconds(_currentSpawnTime));
         while (!spawnToken.IsCancellationRequested)
         {
-            spawnObject = PoolManager.GetGameObjectFromPool(spawnObjectsPrefabs[randomizer.Next(_spawnObjectsCount)]);
+            spawnObject = _pool.GetGameObjectFromPool(spawnObjectsPrefabs[randomizer.Next(_spawnObjectsCount)]);
             SetSpawnObject(spawnObject);
             spawnObject.transform.position = CalculateSpawnPosition();
             await Task.Delay(TimeSpan.FromSeconds(_currentSpawnTime * _initialSpeedModifyer / _speedModifyer));

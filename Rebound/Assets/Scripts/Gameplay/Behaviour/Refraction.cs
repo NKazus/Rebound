@@ -1,14 +1,19 @@
 using UnityEngine;
+using Zenject;
 
-[RequireComponent(typeof(ObjectColor), typeof(IRefraction))]
+[RequireComponent(typeof(ObjectColor))]
 public class Refraction : MonoBehaviour
 {
+    [SerializeField] private RefractionType type;
     private IRefraction _refraction;
     private ObjectColor _objectColor;
+    [Inject] private GlobalEventManager _eventManager;
+    [Inject] private RefractionProvider _refractionProvider;
 
+    #region MONO
     private void Awake()
     {
-        _refraction = GetComponent<IRefraction>();
+        _refraction = _refractionProvider.GetRefraction(type);
         _objectColor = GetComponent<ObjectColor>();
     }
 
@@ -16,7 +21,7 @@ public class Refraction : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player") && _refraction != null)
         {
-            GlobalEventManager.CalculateSpeed(_refraction.Refract, false);
+            _eventManager.CalculateSpeed(_refraction.Refract, false);
             _objectColor.ActivateGlowEffect(true);
         }
     }
@@ -28,14 +33,15 @@ public class Refraction : MonoBehaviour
             _objectColor.ActivateGlowEffect(false);
         }
     }
+    #endregion
 
     public void SetObjectParameters(float colorValue)
     {
         _objectColor.SetColor(colorValue);
     }
+}
 
-    public interface IRefraction
-    {
-        public float Refract(float value);
-    }
+public interface IRefraction
+{
+    public float Refract(float value);
 }

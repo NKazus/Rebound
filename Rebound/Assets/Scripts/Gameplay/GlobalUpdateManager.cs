@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class GlobalUpdateManager : MonoBehaviour
 {
-    public static event Action GlobalFixedUpdateEvent;
-    public static event Action GlobalUpdateEvent;
+    public event Action GlobalFixedUpdateEvent;
+    public event Action GlobalUpdateEvent;
 
     private void FixedUpdate()
     {

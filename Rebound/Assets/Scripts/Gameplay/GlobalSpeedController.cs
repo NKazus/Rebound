@@ -1,13 +1,13 @@
 using System;
 using UnityEngine;
+using Zenject;
 
 public class GlobalSpeedController : MonoBehaviour
 {
     public static float ScrollSpeed { get; private set; }
-    
-    [SerializeField] private PlayerMovement player;
-    [SerializeField] private ObjectColor playerColor;
 
+    [Inject] private PlayerMovement _playerMovement;
+    [Inject] private PlayerColor _playerColor;
     private float _globalSpeed;
     private float _playerSpeed;
     private float _calculatedScrollSpeed;
@@ -15,29 +15,34 @@ public class GlobalSpeedController : MonoBehaviour
     private float _minScrollSpeed;
     private float _deltaSpeedAngle;
     private float _deltaCosine;
+    [Inject] private GlobalEventManager _eventManager;
+    [Inject] private InitConfig _initConfig;
 
+    #region MONO
     private void Awake()
     {
-        var configInfo = Resources.Load<InitConfig>("InitConfig");
-        
-        _globalSpeed = configInfo.InitialGlobalSpeed;
-        _maxScrollSpeed = configInfo.MaxScrollSpeed;
-        _minScrollSpeed = configInfo.MinScrollSpeed;
+        _globalSpeed = _initConfig.InitialGlobalSpeed;
+        _maxScrollSpeed = _initConfig.MaxScrollSpeed;
+        _minScrollSpeed = _initConfig.MinScrollSpeed;
 
-        _deltaSpeedAngle = configInfo.MinDeflectionAngle;
+        _deltaSpeedAngle = _initConfig.MinDeflectionAngle;
         _deltaCosine = Mathf.Cos(_deltaSpeedAngle * Mathf.Deg2Rad);
     }
 
     private void OnEnable()
     {
-        GlobalEventManager.InitializeSpeedEvent += InitializeSpeedParameters;
-        GlobalEventManager.CalculateSpeedEvent += UpdateSpeedValues;
+        _eventManager.InitializeSpeedEvent += InitializeSpeedParameters;
+        _eventManager.CalculateSpeedEvent += UpdateSpeedValues;
     }
-
+    private void OnDisable()
+    {
+        _eventManager.CalculateSpeedEvent -= UpdateSpeedValues;
+    }
+    #endregion
 
     private void InitializeSpeedParameters(Vector3 initialDirection)
     {
-        player.SetInitialSpeedSign(Mathf.Sign(initialDirection.x));
+        _playerMovement.SetInitialSpeedSign(Mathf.Sign(initialDirection.x));
 
         float initialAngle = Vector3.Angle(Vector3.up, initialDirection);        
         initialAngle = initialAngle < _deltaSpeedAngle ? _deltaSpeedAngle : initialAngle;  
@@ -46,7 +51,7 @@ public class GlobalSpeedController : MonoBehaviour
         ScrollSpeed = _globalSpeed * Mathf.Cos(initialAngle * Mathf.Deg2Rad);
 
         ShareSpeedChanges();
-        GlobalEventManager.InitializeSpeedEvent -= InitializeSpeedParameters;
+        _eventManager.InitializeSpeedEvent -= InitializeSpeedParameters;
     }
 
     private void UpdateSpeedValues(Func<float, float> calculate, bool reflect)
@@ -54,9 +59,9 @@ public class GlobalSpeedController : MonoBehaviour
         _calculatedScrollSpeed = calculate(ScrollSpeed);
         if (_calculatedScrollSpeed < 0)
         {
-            GlobalEventManager.CalculateSpeedEvent -= UpdateSpeedValues;
-            GlobalEventManager.UpdateScrollingSpeed(_minScrollSpeed);
-            GlobalEventManager.EliminatePlayer();
+            _eventManager.CalculateSpeedEvent -= UpdateSpeedValues;
+            _eventManager.UpdateScrollingSpeed(_minScrollSpeed);
+            _eventManager.EliminatePlayer();
             return;
         }
         ScrollSpeed = Mathf.Clamp(_calculatedScrollSpeed, _minScrollSpeed, _maxScrollSpeed);
@@ -64,7 +69,7 @@ public class GlobalSpeedController : MonoBehaviour
         RecalculatePlayerSpeed();
         if (reflect)
         {
-            player.ReversePlayerSpeedSign();
+            _playerMovement.ReversePlayerSpeedSign();
         }
         ShareSpeedChanges();
     }
@@ -76,18 +81,14 @@ public class GlobalSpeedController : MonoBehaviour
 
     private void ShareSpeedChanges()
     {
-        player.SetPlayerSpeedAbs(_playerSpeed);
-        playerColor.SetColor(_playerSpeed/_globalSpeed);
-        GlobalEventManager.UpdateScrollingSpeed(ScrollSpeed);
+        _playerMovement.SetPlayerSpeedAbs(_playerSpeed);
+        _playerColor.SetColor(_playerSpeed/_globalSpeed);
+        _eventManager.UpdateScrollingSpeed(ScrollSpeed);
     }
 
-    private void OnDisable()
-    {
-        GlobalEventManager.CalculateSpeedEvent -= UpdateSpeedValues;
-    }
+}
 
-    public interface IGlobalScroll
-    {
-        public void SetScrollSpeed(float value);
-    }
+public interface IGlobalScroll
+{
+    public void SetScrollSpeed(float value);
 }

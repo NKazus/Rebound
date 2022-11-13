@@ -1,5 +1,6 @@
 using DG.Tweening;
 using UnityEngine;
+using Zenject;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -7,7 +8,9 @@ public class PlayerMovement : MonoBehaviour
     private Transform _transform;
     private float _movementSpeedAbs;
     private float _movementSpeedSign;
+    [Inject] private GlobalEventManager _eventManager;
 
+    #region MONO
     private void Awake()
     {
         _playerRigidBody = GetComponent<Rigidbody2D>();
@@ -16,8 +19,24 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnEnable()
     {
-        GlobalEventManager.GameStateEvent += Eliminate;
+        _eventManager.GameStateEvent += Eliminate;
     }
+    private void OnDisable()
+    {
+        _eventManager.GameStateEvent -= Eliminate;
+        DOTween.Kill(this);
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        _transform.DOScale(0.8f, 0.05f).SetId(this).Play();
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        _transform.DOScale(1f, 0.05f).SetId(this).Play();
+    }
+    #endregion
 
     private void SetPlayerSpeed()
     {
@@ -53,19 +72,4 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private void OnDisable()
-    {
-        GlobalEventManager.GameStateEvent -= Eliminate;
-        DOTween.Kill(this);
-    }
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        _transform.DOScale(0.8f, 0.05f).SetId(this).Play();
-    }
-
-    private void OnCollisionExit2D(Collision2D collision)
-    {
-        _transform.DOScale(1f, 0.05f).SetId(this).Play();
-    }
 }

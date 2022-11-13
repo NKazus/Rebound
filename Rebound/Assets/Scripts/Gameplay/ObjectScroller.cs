@@ -1,12 +1,17 @@
 using UnityEngine;
+using Zenject;
 
-public class ObjectScroller : MonoBehaviour, GlobalSpeedController.IGlobalScroll
+public class ObjectScroller : MonoBehaviour, IGlobalScroll
 {
     private Rigidbody2D _rigidbody;
     private float _scrollSpeed;
     private float _despawnPosition;
     private Transform _localTransform;
+    [Inject] private GlobalUpdateManager _updateManager;
+    [Inject] private GlobalEventManager _eventManager;
+    [Inject] private PoolManager _pool;
 
+    #region MONO
     private void Awake()
     {
         _despawnPosition = GameObject.FindWithTag("PoolLimit").transform.position.y;
@@ -18,23 +23,24 @@ public class ObjectScroller : MonoBehaviour, GlobalSpeedController.IGlobalScroll
     {
         _scrollSpeed = GlobalSpeedController.ScrollSpeed;
         _rigidbody.velocity = new Vector2(0f, -_scrollSpeed);
-        GlobalUpdateManager.GlobalUpdateEvent += LocalUpdate;
-        GlobalEventManager.ResetScrollingSpeedEvent += SetScrollSpeed;
+        _updateManager.GlobalUpdateEvent += LocalUpdate;
+        _eventManager.ResetScrollingSpeedEvent += SetScrollSpeed;
     }
+    private void OnDisable()
+    {
+        _updateManager.GlobalUpdateEvent -= LocalUpdate;
+        _eventManager.ResetScrollingSpeedEvent -= SetScrollSpeed;
+    }
+    #endregion
 
     private void LocalUpdate()
     {
         if(_localTransform.position.y < _despawnPosition)
         {
-            PoolManager.PutGameObjectToPool(gameObject);
+            _pool.PutGameObjectToPool(gameObject);
         }
     }
 
-    private void OnDisable()
-    {
-        GlobalUpdateManager.GlobalUpdateEvent -= LocalUpdate;
-        GlobalEventManager.ResetScrollingSpeedEvent -= SetScrollSpeed;
-    }
 
     public void SetScrollSpeed(float scrollSpeed)
     {

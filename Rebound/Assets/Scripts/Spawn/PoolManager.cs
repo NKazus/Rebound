@@ -1,16 +1,13 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
 
-public class PoolManager : MonoBehaviour
+public class PoolManager
 {
-    private static Dictionary<string, LinkedList<GameObject>> _poolDictionary;
+    [Inject] private DiContainer diContainer;
+    private Dictionary<string, LinkedList<GameObject>> _poolDictionary = new Dictionary<string, LinkedList<GameObject>>();
 
-    private void Awake()
-    {
-        _poolDictionary = new Dictionary<string, LinkedList<GameObject>>();
-    }
-
-    public static GameObject GetGameObjectFromPool(GameObject prefab)
+    public GameObject GetGameObjectFromPool(GameObject prefab)
     {
         if (!_poolDictionary.ContainsKey(prefab.name))
         {
@@ -24,12 +21,14 @@ public class PoolManager : MonoBehaviour
             result.SetActive(true);
             return result;
         }
-        result = Instantiate(prefab);
+
+        result = diContainer.InstantiatePrefab(prefab);
+        //result = Instantiate(prefab);
         result.name = prefab.name;
         return result;
     }
 
-    public static void PutGameObjectToPool(GameObject target)
+    public void PutGameObjectToPool(GameObject target)
     {
         _poolDictionary[target.name].AddFirst(target);
         target.SetActive(false);

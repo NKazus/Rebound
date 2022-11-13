@@ -1,7 +1,8 @@
 using System.Threading;
 using UnityEngine;
+using Zenject;
 
-public class SpawnManager : MonoBehaviour, GlobalSpeedController.IGlobalScroll
+public class SpawnManager : MonoBehaviour, IGlobalScroll
 {
     [SerializeField] private ObjectSpawner[] objectSpawners;
     [SerializeField] private float spawnUpdateTimeCoefficient = 30f;
@@ -14,11 +15,14 @@ public class SpawnManager : MonoBehaviour, GlobalSpeedController.IGlobalScroll
     private float _scrollSpeed;
     private System.Random _random;
     private CancellationTokenSource _spawnCancelTokenSource;
+    [Inject] private GlobalUpdateManager _updateManager;
+    [Inject] private GlobalEventManager _eventManager;
+    [Inject] private InitConfig _initConfig;
 
+    #region MONO
     private void Awake()
     {
-        var configInfo = Resources.Load<InitConfig>("InitConfig");
-        _maxCheckValue = configInfo.InitialGlobalSpeed * spawnUpdateTimeCoefficient;
+        _maxCheckValue = _initConfig.InitialGlobalSpeed * spawnUpdateTimeCoefficient;
 
         _spawnCancelTokenSource = new CancellationTokenSource();
         _random = new System.Random();
@@ -29,9 +33,18 @@ public class SpawnManager : MonoBehaviour, GlobalSpeedController.IGlobalScroll
 
     private void OnEnable()
     {
-        GlobalEventManager.GameStateEvent += ChangeSpawnState;
-        GlobalEventManager.ResetScrollingSpeedEvent += SetScrollSpeed;
+        _eventManager.GameStateEvent += ChangeSpawnState;
+        _eventManager.ResetScrollingSpeedEvent += SetScrollSpeed;
     }
+    private void OnDisable()
+    {
+        _eventManager.GameStateEvent -= ChangeSpawnState;
+        _eventManager.ResetScrollingSpeedEvent -= SetScrollSpeed;
+
+        CancelTokenSource();
+        _spawnCancelTokenSource.Dispose();
+    }
+    #endregion
 
     private void ChangeSpawnState(bool isActive)
     {
@@ -42,12 +55,12 @@ public class SpawnManager : MonoBehaviour, GlobalSpeedController.IGlobalScroll
                 objectSpawners[i].SetSpawningTime(_spawnTimeIntervals[i]);
                 objectSpawners[i].StartSpawning(_spawnCancelTokenSource.Token);
             }
-            GlobalUpdateManager.GlobalFixedUpdateEvent += LocalFixedUpdate;          
+            _updateManager.GlobalFixedUpdateEvent += LocalFixedUpdate;          
         }
         else
         {
-            GlobalUpdateManager.GlobalFixedUpdateEvent -= LocalFixedUpdate;
-            GlobalEventManager.ResetScrollingSpeedEvent -= SetScrollSpeed;
+            _updateManager.GlobalFixedUpdateEvent -= LocalFixedUpdate;
+            _eventManager.ResetScrollingSpeedEvent -= SetScrollSpeed;
 
             CancelTokenSource();
         }
@@ -114,14 +127,6 @@ public class SpawnManager : MonoBehaviour, GlobalSpeedController.IGlobalScroll
         }
     }
 
-    private void OnDisable()
-    {
-        GlobalEventManager.GameStateEvent -= ChangeSpawnState;
-        GlobalEventManager.ResetScrollingSpeedEvent -= SetScrollSpeed;
-
-        CancelTokenSource();
-        _spawnCancelTokenSource.Dispose();
-    }
 
     public void SetScrollSpeed(float scrollSpeed)
     {

@@ -1,37 +1,47 @@
 using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Zenject;
 
 public class GameplayInput : MonoBehaviour
 {
-    public static event Action<Vector3> PlayerInputEvent;
+    public event Action<Vector3> PlayerInputEvent;
 
     private Vector3 _playerTouch;
     private Camera _mainCamera;
+    [Inject] private GlobalUpdateManager _updateManager;
+    [Inject] private GlobalEventManager _eventManager;
 
+    #region MONO
     private void Awake()
     {
-        _mainCamera = GetComponent<Camera>();
+        _mainCamera = Camera.main;
     }
 
     private void OnEnable()
     {
-        GlobalEventManager.GameStateEvent += ChangeInputState;
+        _eventManager.GameStateEvent += ChangeInputState;
     }
+    private void OnDisable()
+    {
+        _eventManager.GameStateEvent -= ChangeInputState;
+        _updateManager.GlobalUpdateEvent -= LocalUpdate;
+        _updateManager.GlobalUpdateEvent -= LocalUpdateReload;
+    }
+    #endregion
 
     private void ChangeInputState(bool isActive)
     {
         if (isActive)
         {
-            GlobalUpdateManager.GlobalUpdateEvent += LocalUpdate;
+            _updateManager.GlobalUpdateEvent += LocalUpdate;
         }
         else
         {
-            GlobalUpdateManager.GlobalUpdateEvent -= LocalUpdate;
-            GlobalUpdateManager.GlobalUpdateEvent += LocalUpdateReload;
+            _updateManager.GlobalUpdateEvent -= LocalUpdate;
+            _updateManager.GlobalUpdateEvent += LocalUpdateReload;
         }
     }
-
 
     private void LocalUpdate()
     {
@@ -49,12 +59,5 @@ public class GameplayInput : MonoBehaviour
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
-    }
-
-    private void OnDisable()
-    {
-        GlobalEventManager.GameStateEvent -= ChangeInputState;
-        GlobalUpdateManager.GlobalUpdateEvent -= LocalUpdate;
-        GlobalUpdateManager.GlobalUpdateEvent -= LocalUpdateReload;
     }
 }

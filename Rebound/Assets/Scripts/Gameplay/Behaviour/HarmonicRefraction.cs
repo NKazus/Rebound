@@ -1,7 +1,6 @@
 using UnityEngine;
-using static Refraction;
 
-public class HarmonicRefraction : MonoBehaviour, IRefraction
+public class HarmonicRefraction : IRefraction
 {
     public float Refract(float value)
     {

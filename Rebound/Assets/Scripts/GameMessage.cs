@@ -1,6 +1,7 @@
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
+using Zenject;
 
 public class GameMessage : MonoBehaviour
 {
@@ -11,7 +12,9 @@ public class GameMessage : MonoBehaviour
     [SerializeField] private TextMeshProUGUI startMessage;
     [SerializeField] private TextMeshProUGUI newScoreMessage;
     private Tween _textScaleTween;
+    [Inject] private GlobalEventManager _eventManager;
 
+    #region MONO
     private void Awake()
     {
         startMessage.text = INITIAL_MESSAGE;
@@ -23,8 +26,15 @@ public class GameMessage : MonoBehaviour
 
     private void OnEnable()
     {
-        GlobalEventManager.GameStateEvent += SetMessage;
+        _eventManager.GameStateEvent += SetMessage;
     }
+
+    private void OnDisable()
+    {
+        _eventManager.GameStateEvent -= SetMessage;
+        DOTween.Kill(this);
+    }
+    #endregion
 
     private void SetMessage(bool isActive)
     {
@@ -40,12 +50,6 @@ public class GameMessage : MonoBehaviour
             startMessage.DOFade(1f, 1f).SetId(this).Play();
             _textScaleTween.Play();
         }
-    }
-
-    private void OnDisable()
-    {
-        GlobalEventManager.GameStateEvent -= SetMessage;
-        DOTween.Kill(this);
     }
 
     public void ShowNewScoreMessage()

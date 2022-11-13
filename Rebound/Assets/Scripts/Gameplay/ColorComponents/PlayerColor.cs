@@ -1,5 +1,6 @@
 using DG.Tweening;
 using UnityEngine;
+using Zenject;
 
 public class PlayerColor : ObjectColor
 {
@@ -9,12 +10,12 @@ public class PlayerColor : ObjectColor
     private float _currentAngle;
     private int _leftIntervalIndex;
     private float _interpolation;
+    [Inject] private InitConfig _initConfig;
    
     protected override void Awake()
     {
         base.Awake();
-        var configInfo = Resources.Load<InitConfig>("InitConfig");
-        _minDeltaAngle = configInfo.MinDeflectionAngle;
+        _minDeltaAngle = _initConfig.MinDeflectionAngle;
         _intervalLength = (90f - _minDeltaAngle) / (colors.Length - 1);
         objectMaterial.SetColor("_Color", Color.white * intensity / 2);
     }

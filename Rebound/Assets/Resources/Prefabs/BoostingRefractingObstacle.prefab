@@ -14,7 +14,6 @@ GameObject:
   - component: {fileID: -8442093339529718492}
   - component: {fileID: -8521590193642411247}
   - component: {fileID: 7594636897189645685}
-  - component: {fileID: -5164833561610285507}
   - component: {fileID: 6367534308339074771}
   m_Layer: 0
   m_Name: BoostingRefractingObstacle
@@ -152,18 +151,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff5a61618b7717f48b07e8dbd5b23b72, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &-5164833561610285507
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7346281120247433221}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: df93a43746c22e44b9a1bcbe1c88a6bb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  type: 1
 --- !u!61 &6367534308339074771
 BoxCollider2D:
   m_ObjectHideFlags: 0

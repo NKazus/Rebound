@@ -1,18 +1,27 @@
 using System;
 using UnityEngine;
+using Zenject;
 
 public class ReflectionController : MonoBehaviour
 {
-    public static BaseReflection ReflectionState { get; private set; } = new SimpleReflection(Color.white);
-    public static event Action<float> ReflectionUpdateEvent;
+    public BaseReflection ReflectionState { get; private set; } = new SimpleReflection(Color.white);
+    public event Action<float> ReflectionUpdateEvent;
 
     private float _remainingTime = 0f;
+    [Inject] private GlobalUpdateManager _updateManager;
+    [Inject] private GlobalEventManager _eventManager;
 
-
+    #region MONO
     private void OnEnable()
     {
-        GlobalEventManager.ActivateReflectionEvent += ActivateReflection;
+        _eventManager.ActivateReflectionEvent += ActivateReflection;
     }
+    private void OnDisable()
+    {
+        _eventManager.ActivateReflectionEvent -= ActivateReflection;
+        _updateManager.GlobalFixedUpdateEvent -= LocalFixedUpdate;
+    }
+    #endregion
 
     private void LocalFixedUpdate()
     {
@@ -21,7 +30,7 @@ public class ReflectionController : MonoBehaviour
         {
             ReflectionState = ReflectionState.SwitchMode(Color.white);
             ReflectionUpdateEvent?.Invoke(1f);
-            GlobalUpdateManager.GlobalFixedUpdateEvent -= LocalFixedUpdate;
+            _updateManager.GlobalFixedUpdateEvent -= LocalFixedUpdate;
         }     
     }
 
@@ -31,38 +40,34 @@ public class ReflectionController : MonoBehaviour
         {
             ReflectionState = ReflectionState.SwitchMode(triggerColor);
             ReflectionUpdateEvent?.Invoke(activationTime);
-            GlobalUpdateManager.GlobalFixedUpdateEvent += LocalFixedUpdate;
+            _updateManager.GlobalFixedUpdateEvent += LocalFixedUpdate;
         }
         _remainingTime = _remainingTime > activationTime ? _remainingTime : activationTime;
     }
 
-    private void OnDisable()
-    {
-        GlobalEventManager.ActivateReflectionEvent -= ActivateReflection;
-        GlobalUpdateManager.GlobalFixedUpdateEvent -= LocalFixedUpdate;
-    }
-
-    #region ReflectionMode
-    public abstract class BaseReflection
-    {
-        public static bool IsActiveState { get; protected set; }
-        public Color ReflectionColor { get; protected set; }    
-        public abstract float Reflect(float value);
-        public abstract BaseReflection SwitchMode(Color value);
-    }
-
-    public class ReducingReflection : BaseReflection
-    {
-        public ReducingReflection(Color initialColor) { IsActiveState = true; ReflectionColor = initialColor; }
-        public override float Reflect(float value) { return value -= value * 0.05f; }
-        public override BaseReflection SwitchMode(Color value) { return new SimpleReflection(value); }
-    }
-
-    public class SimpleReflection : BaseReflection
-    {
-        public SimpleReflection(Color initialColor) { IsActiveState = false; ReflectionColor = initialColor; }
-        public override float Reflect(float value) { return value; }
-        public override BaseReflection SwitchMode(Color value) { return new ReducingReflection(value); }
-    }
-    #endregion
+    
 }
+
+#region ReflectionMode
+public abstract class BaseReflection
+{
+    public static bool IsActiveState { get; protected set; }
+    public Color ReflectionColor { get; protected set; }
+    public abstract float Reflect(float value);
+    public abstract BaseReflection SwitchMode(Color value);
+}
+
+public class ReducingReflection : BaseReflection
+{
+    public ReducingReflection(Color initialColor) { IsActiveState = true; ReflectionColor = initialColor; }
+    public override float Reflect(float value) { return value -= value * 0.05f; }
+    public override BaseReflection SwitchMode(Color value) { return new SimpleReflection(value); }
+}
+
+public class SimpleReflection : BaseReflection
+{
+    public SimpleReflection(Color initialColor) { IsActiveState = false; ReflectionColor = initialColor; }
+    public override float Reflect(float value) { return value; }
+    public override BaseReflection SwitchMode(Color value) { return new ReducingReflection(value); }
+}
+#endregion

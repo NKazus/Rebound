@@ -1,9 +1,10 @@
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
+using Zenject;
 
 [RequireComponent(typeof(GameMessage))]
-public class ScoreManager : MonoBehaviour, GlobalSpeedController.IGlobalScroll
+public class ScoreManager : MonoBehaviour, IGlobalScroll
 {
     [SerializeField] private GameObject scorePanel; 
     [SerializeField] private TextMeshProUGUI scoreUI;
@@ -14,8 +15,10 @@ public class ScoreManager : MonoBehaviour, GlobalSpeedController.IGlobalScroll
     private float _scorePerSecond;
     private float _scoreCount;
     private float _highScoreCount;
+    [Inject] private GlobalUpdateManager _updateManager;
+    [Inject] private GlobalEventManager _eventManager;
 
-
+    #region MONO
     private void Awake()
     {
         _gameMessage = GetComponent<GameMessage>();
@@ -24,10 +27,17 @@ public class ScoreManager : MonoBehaviour, GlobalSpeedController.IGlobalScroll
     }
 
     private void OnEnable()
-    { 
-        GlobalEventManager.ResetScrollingSpeedEvent += SetScrollSpeed;
-        GlobalEventManager.GameStateEvent += ChangeScoreState;
+    {
+        _eventManager.ResetScrollingSpeedEvent += SetScrollSpeed;
+        _eventManager.GameStateEvent += ChangeScoreState;
     }
+    private void OnDisable()
+    {
+        _eventManager.ResetScrollingSpeedEvent -= SetScrollSpeed;
+        _eventManager.GameStateEvent -= ChangeScoreState;
+        DOTween.Kill(this);
+    }
+    #endregion
 
     private void LocalFixedUpdateScore()
     {
@@ -36,8 +46,8 @@ public class ScoreManager : MonoBehaviour, GlobalSpeedController.IGlobalScroll
         if (_scoreCount > _highScoreCount)
         {
             _highScoreCount = _scoreCount;
-            GlobalUpdateManager.GlobalFixedUpdateEvent -= LocalFixedUpdateScore;
-            GlobalUpdateManager.GlobalFixedUpdateEvent += LocalFixedUpdateHighScore;
+            _updateManager.GlobalFixedUpdateEvent -= LocalFixedUpdateScore;
+            _updateManager.GlobalFixedUpdateEvent += LocalFixedUpdateHighScore;
             ChangeScoreColor();
         }
     }
@@ -65,13 +75,13 @@ public class ScoreManager : MonoBehaviour, GlobalSpeedController.IGlobalScroll
         if (isActive)
         {
             scorePanel.SetActive(true);
-            GlobalUpdateManager.GlobalFixedUpdateEvent += LocalFixedUpdateScore;
+            _updateManager.GlobalFixedUpdateEvent += LocalFixedUpdateScore;
         }
         else
         {
-            GlobalUpdateManager.GlobalFixedUpdateEvent -= LocalFixedUpdateScore;
-            GlobalUpdateManager.GlobalFixedUpdateEvent -= LocalFixedUpdateHighScore;
-            GlobalEventManager.ResetScrollingSpeedEvent -= SetScrollSpeed;
+            _updateManager.GlobalFixedUpdateEvent -= LocalFixedUpdateScore;
+            _updateManager.GlobalFixedUpdateEvent -= LocalFixedUpdateHighScore;
+            _eventManager.ResetScrollingSpeedEvent -= SetScrollSpeed;
             SaveHighScore();
         }
     }
@@ -99,12 +109,6 @@ public class ScoreManager : MonoBehaviour, GlobalSpeedController.IGlobalScroll
         }
     }
 
-    private void OnDisable()
-    {
-        GlobalEventManager.ResetScrollingSpeedEvent -= SetScrollSpeed;
-        GlobalEventManager.GameStateEvent -= ChangeScoreState;
-        DOTween.Kill(this);
-    }
 
     public void SetScrollSpeed(float scrollSpeed)
     {

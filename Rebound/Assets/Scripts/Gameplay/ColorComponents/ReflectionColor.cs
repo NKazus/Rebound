@@ -1,8 +1,11 @@
 using DG.Tweening;
+using Zenject;
 
 public class ReflectionColor : ObjectColor
 {
     private float _glowMaxValue;
+    [Inject] private ReflectionController _controller;
+
     private void OnEnable()
     {
         SetColor(1f);
@@ -10,8 +13,8 @@ public class ReflectionColor : ObjectColor
 
     public override void SetColor(float intensityModifyer)
     {
-        currentColor = ReflectionController.ReflectionState.ReflectionColor;
-        objectMaterial.DOColor(ReflectionController.ReflectionState.ReflectionColor * intensity, "_Color", 0.1f).SetLink(gameObject).Play();
+        currentColor = _controller.ReflectionState.ReflectionColor;
+        objectMaterial.DOColor(currentColor * intensity, "_Color", 0.1f).SetLink(gameObject).Play();
     }
 
     public override void ActivateGlowEffect(bool isActive)

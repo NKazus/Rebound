@@ -1,7 +1,4 @@
-using UnityEngine;
-using static Refraction;
-
-public class SimpleRefraction : MonoBehaviour, IRefraction
+public class SimpleRefraction : IRefraction
 {
     public float Refract(float value)
     {

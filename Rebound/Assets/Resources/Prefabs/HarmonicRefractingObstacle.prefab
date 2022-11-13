@@ -14,7 +14,6 @@ GameObject:
   - component: {fileID: 6656761834673156358}
   - component: {fileID: -4911312762561820679}
   - component: {fileID: -3512714758834085956}
-  - component: {fileID: 8238330249351636735}
   - component: {fileID: -3802817889844972631}
   m_Layer: 0
   m_Name: HarmonicRefractingObstacle
@@ -166,18 +165,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff5a61618b7717f48b07e8dbd5b23b72, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &8238330249351636735
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3857066981382773194}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 41208b5b32e8b704fad6783075241e1b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  type: 2
 --- !u!114 &-3802817889844972631
 MonoBehaviour:
   m_ObjectHideFlags: 0

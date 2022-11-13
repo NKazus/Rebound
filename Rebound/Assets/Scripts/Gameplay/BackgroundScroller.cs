@@ -1,6 +1,7 @@
 using UnityEngine;
+using Zenject;
 
-public class BackgroundScroller : MonoBehaviour, GlobalSpeedController.IGlobalScroll
+public class BackgroundScroller : MonoBehaviour, IGlobalScroll
 {
     private BoxCollider2D _backgroundCollider;
     private Rigidbody2D _backgroundRigidbody;
@@ -8,8 +9,10 @@ public class BackgroundScroller : MonoBehaviour, GlobalSpeedController.IGlobalSc
     private float _backgroundScrollSpeed;
     private Vector2 _resetPosition;
     private Transform _localTransform;
+    [Inject] private GlobalUpdateManager _updateManager;
+    [Inject] private GlobalEventManager _eventManager;
 
-
+    #region MONO
     private void Awake()
     {
         _backgroundCollider = GetComponent<BoxCollider2D>();
@@ -23,9 +26,15 @@ public class BackgroundScroller : MonoBehaviour, GlobalSpeedController.IGlobalSc
 
     private void OnEnable()
     {
-        GlobalUpdateManager.GlobalUpdateEvent += LocalUpdate;
-        GlobalEventManager.ResetScrollingSpeedEvent += SetScrollSpeed;
+        _updateManager.GlobalUpdateEvent += LocalUpdate;
+        _eventManager.ResetScrollingSpeedEvent += SetScrollSpeed;
     }
+    private void OnDisable()
+    {
+        _updateManager.GlobalUpdateEvent -= LocalUpdate;
+        _eventManager.ResetScrollingSpeedEvent -= SetScrollSpeed;
+    }
+    #endregion
 
     private void LocalUpdate()
     {
@@ -41,9 +50,4 @@ public class BackgroundScroller : MonoBehaviour, GlobalSpeedController.IGlobalSc
         _backgroundRigidbody.velocity = new Vector2(0, -_backgroundScrollSpeed);
     }
 
-    private void OnDisable()
-    {
-        GlobalUpdateManager.GlobalUpdateEvent -= LocalUpdate;
-        GlobalEventManager.ResetScrollingSpeedEvent -= SetScrollSpeed;
-    }
 }

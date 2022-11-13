@@ -1,4 +1,5 @@
 using UnityEngine;
+using Zenject;
 
 public class InitialMove : MonoBehaviour
 {
@@ -11,8 +12,10 @@ public class InitialMove : MonoBehaviour
     private Vector3 _currentDirection; //текущий выбранный вектор, к которому применяются ограничения
     private Vector3 _initialDirection; //итоговый вектор, с которого берутся параметры
     private float _maxInitialAngle = 75;
+    [Inject] private GlobalEventManager _eventManager;
+    [Inject] private InitConfig _initConfig;
 
-
+    #region MONO
     private void Awake()
     {
         _mainCamera = Camera.main;
@@ -20,11 +23,9 @@ public class InitialMove : MonoBehaviour
 
         _lineRenderer = GetComponent<LineRenderer>();
 
-        var configInfo = Resources.Load<InitConfig>("InitConfig");
-        _maxInitialAngle = configInfo.MaxInitialAngle;
+        _maxInitialAngle = _initConfig.MaxInitialAngle;
         _defaultDirection = Quaternion.AngleAxis(-_maxInitialAngle, Vector3.forward) * Vector3.up;
     }
-
 
     private void Update()
     {
@@ -36,12 +37,13 @@ public class InitialMove : MonoBehaviour
                 CalculateDirection();
             }
             if(Input.GetMouseButtonUp(0))//if (_playerTouch.phase == TouchPhase.Ended)
-            {            
-                GlobalEventManager.InitializeMovement(_initialDirection);
+            {
+            _eventManager.InitializeMovement(_initialDirection);
                 gameObject.SetActive(false);
             }     
        // }
     }
+    #endregion
 
     private void CalculateDirection()
     {        
