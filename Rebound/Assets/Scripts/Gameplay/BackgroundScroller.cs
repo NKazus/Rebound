@@ -1,6 +1,7 @@
 using UnityEngine;
 using Zenject;
 
+[RequireComponent(typeof(Rigidbody2D))]
 public class BackgroundScroller : MonoBehaviour, IGlobalScroll
 {
     private BoxCollider2D _backgroundCollider;
@@ -9,8 +10,9 @@ public class BackgroundScroller : MonoBehaviour, IGlobalScroll
     private float _backgroundScrollSpeed;
     private Vector2 _resetPosition;
     private Transform _localTransform;
-    [Inject] private GlobalUpdateManager _updateManager;
-    [Inject] private GlobalEventManager _eventManager;
+
+    [Inject] private readonly GlobalUpdateManager _updateManager;
+    [Inject] private readonly GlobalEventManager _eventManager;
 
     #region MONO
     private void Awake()

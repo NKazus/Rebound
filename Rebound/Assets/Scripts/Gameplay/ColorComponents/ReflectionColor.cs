@@ -4,7 +4,8 @@ using Zenject;
 public class ReflectionColor : ObjectColor
 {
     private float _glowMaxValue;
-    [Inject] private ReflectionController _controller;
+
+    [Inject] private readonly ReflectionController _controller;
 
     private void OnEnable()
     {

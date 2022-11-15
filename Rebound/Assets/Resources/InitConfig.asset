@@ -12,8 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e27f831910ed09b4a993364b6b2f6e15, type: 3}
   m_Name: InitConfig
   m_EditorClassIdentifier: 
-  _initialGlobalSpeed: 5
+  _initialGlobalSpeed: 6
   _maxScrollSpeed: 20
-  _minScrollSpeed: 1.5
   _maxInitialAngle: 75
   _minDeflectionAngle: 10

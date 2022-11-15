@@ -12,7 +12,8 @@ public class GameMessage : MonoBehaviour
     [SerializeField] private TextMeshProUGUI startMessage;
     [SerializeField] private TextMeshProUGUI newScoreMessage;
     private Tween _textScaleTween;
-    [Inject] private GlobalEventManager _eventManager;
+
+    [Inject] private readonly GlobalEventManager _eventManager;
 
     #region MONO
     private void Awake()

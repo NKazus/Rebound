@@ -24,8 +24,9 @@ public class ObjectSpawner : MonoBehaviour, IGlobalScroll
     private float _initialSpeedModifyer;
     private float _currentSpawnTime = 5f;   
     private int _spawnObjectsCount;
-    [Inject] private PoolManager _pool;
-    [Inject] private InitConfig _initConfig;
+
+    [Inject] private readonly PoolManager _pool;
+    [Inject] private readonly InitConfig _initConfig;
 
     #region MONO
     protected void Awake()

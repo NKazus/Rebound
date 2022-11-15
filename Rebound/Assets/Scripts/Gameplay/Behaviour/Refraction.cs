@@ -5,10 +5,12 @@ using Zenject;
 public class Refraction : MonoBehaviour
 {
     [SerializeField] private RefractionType type;
+
     private IRefraction _refraction;
     private ObjectColor _objectColor;
-    [Inject] private GlobalEventManager _eventManager;
-    [Inject] private RefractionProvider _refractionProvider;
+
+    [Inject] private readonly GlobalEventManager _eventManager;
+    [Inject] private readonly RefractionProvider _refractionProvider;
 
     #region MONO
     private void Awake()

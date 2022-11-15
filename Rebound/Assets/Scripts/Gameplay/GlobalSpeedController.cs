@@ -6,8 +6,6 @@ public class GlobalSpeedController : MonoBehaviour
 {
     public static float ScrollSpeed { get; private set; }
 
-    [Inject] private PlayerMovement _playerMovement;
-    [Inject] private PlayerColor _playerColor;
     private float _globalSpeed;
     private float _playerSpeed;
     private float _calculatedScrollSpeed;
@@ -15,15 +13,18 @@ public class GlobalSpeedController : MonoBehaviour
     private float _minScrollSpeed;
     private float _deltaSpeedAngle;
     private float _deltaCosine;
-    [Inject] private GlobalEventManager _eventManager;
-    [Inject] private InitConfig _initConfig;
+
+    [Inject] private readonly PlayerMovement _playerMovement;
+    [Inject] private readonly PlayerColor _playerColor;
+    [Inject] private readonly GlobalEventManager _eventManager;
+    [Inject] private readonly InitConfig _initConfig;
 
     #region MONO
     private void Awake()
     {
         _globalSpeed = _initConfig.InitialGlobalSpeed;
         _maxScrollSpeed = _initConfig.MaxScrollSpeed;
-        _minScrollSpeed = _initConfig.MinScrollSpeed;
+        _minScrollSpeed = _globalSpeed * Mathf.Cos(_initConfig.MaxInitialAngle * Mathf.Deg2Rad);
 
         _deltaSpeedAngle = _initConfig.MinDeflectionAngle;
         _deltaCosine = Mathf.Cos(_deltaSpeedAngle * Mathf.Deg2Rad);
@@ -40,11 +41,11 @@ public class GlobalSpeedController : MonoBehaviour
     }
     #endregion
 
-    private void InitializeSpeedParameters(Vector3 initialDirection)
+    private void InitializeSpeedParameters(Vector2 initialDirection)
     {
         _playerMovement.SetInitialSpeedSign(Mathf.Sign(initialDirection.x));
 
-        float initialAngle = Vector3.Angle(Vector3.up, initialDirection);        
+        float initialAngle = Vector2.Angle(Vector2.up, initialDirection);        
         initialAngle = initialAngle < _deltaSpeedAngle ? _deltaSpeedAngle : initialAngle;  
 
         _playerSpeed = _globalSpeed * Mathf.Sin(initialAngle * Mathf.Deg2Rad);
@@ -65,12 +66,15 @@ public class GlobalSpeedController : MonoBehaviour
             return;
         }
         ScrollSpeed = Mathf.Clamp(_calculatedScrollSpeed, _minScrollSpeed, _maxScrollSpeed);
-        _globalSpeed = ScrollSpeed > _globalSpeed ? (ScrollSpeed / _deltaCosine) : _globalSpeed;
-        RecalculatePlayerSpeed();
         if (reflect)
         {
             _playerMovement.ReversePlayerSpeedSign();
         }
+        else
+        { 
+            _globalSpeed = ScrollSpeed > _globalSpeed ? (ScrollSpeed / _deltaCosine) : _globalSpeed;
+        }
+        RecalculatePlayerSpeed();
         ShareSpeedChanges();
     }
 
@@ -85,7 +89,6 @@ public class GlobalSpeedController : MonoBehaviour
         _playerColor.SetColor(_playerSpeed/_globalSpeed);
         _eventManager.UpdateScrollingSpeed(ScrollSpeed);
     }
-
 }
 
 public interface IGlobalScroll

@@ -9,9 +9,6 @@ public class InitConfig : ScriptableObject
     [SerializeField] private float _maxScrollSpeed;
     public float MaxScrollSpeed => _maxScrollSpeed;
 
-    [SerializeField] private float _minScrollSpeed;
-    public float MinScrollSpeed => _minScrollSpeed;
-
     [SerializeField] private float _maxInitialAngle;
     public float MaxInitialAngle => _maxInitialAngle;
 

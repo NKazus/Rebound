@@ -4,8 +4,9 @@ using Zenject;
 public class SurfaceSpawner : MonoBehaviour
 {
     [SerializeField] private GameObject _surfacePrefab;
-    [Inject] private GameplayInput _input;
-    [Inject] private PoolManager _pool;
+
+    [Inject] private readonly GameplayInput _input;
+    [Inject] private readonly PoolManager _pool;
 
     #region MONO
     private void OnEnable()

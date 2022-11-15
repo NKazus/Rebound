@@ -15,9 +15,9 @@ public class SpawnManager : MonoBehaviour, IGlobalScroll
     private float _scrollSpeed;
     private System.Random _random;
     private CancellationTokenSource _spawnCancelTokenSource;
-    [Inject] private GlobalUpdateManager _updateManager;
-    [Inject] private GlobalEventManager _eventManager;
-    [Inject] private InitConfig _initConfig;
+    [Inject] private readonly GlobalUpdateManager _updateManager;
+    [Inject] private readonly GlobalEventManager _eventManager;
+    [Inject] private readonly InitConfig _initConfig;
 
     #region MONO
     private void Awake()
@@ -126,7 +126,6 @@ public class SpawnManager : MonoBehaviour, IGlobalScroll
             _spawnCancelTokenSource.Cancel();
         }
     }
-
 
     public void SetScrollSpeed(float scrollSpeed)
     {

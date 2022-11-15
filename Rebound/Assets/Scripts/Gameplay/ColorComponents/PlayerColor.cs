@@ -5,12 +5,14 @@ using Zenject;
 public class PlayerColor : ObjectColor
 {
     [SerializeField] private Color[] colors;
+
     private float _minDeltaAngle;
     private float _intervalLength;
     private float _currentAngle;
     private int _leftIntervalIndex;
     private float _interpolation;
-    [Inject] private InitConfig _initConfig;
+
+    [Inject] private readonly InitConfig _initConfig;
    
     protected override void Awake()
     {
@@ -29,5 +31,4 @@ public class PlayerColor : ObjectColor
         currentColor.a = 1f;
         objectMaterial.DOColor(currentColor * intensity, "_Color", 0.2f).SetLink(gameObject).Play();
     }
-
 }

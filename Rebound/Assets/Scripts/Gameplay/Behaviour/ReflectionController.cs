@@ -8,8 +8,9 @@ public class ReflectionController : MonoBehaviour
     public event Action<float> ReflectionUpdateEvent;
 
     private float _remainingTime = 0f;
-    [Inject] private GlobalUpdateManager _updateManager;
-    [Inject] private GlobalEventManager _eventManager;
+
+    [Inject] private readonly GlobalUpdateManager _updateManager;
+    [Inject] private readonly GlobalEventManager _eventManager;
 
     #region MONO
     private void OnEnable()
@@ -44,8 +45,6 @@ public class ReflectionController : MonoBehaviour
         }
         _remainingTime = _remainingTime > activationTime ? _remainingTime : activationTime;
     }
-
-    
 }
 
 #region ReflectionMode

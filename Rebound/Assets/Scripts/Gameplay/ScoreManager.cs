@@ -15,8 +15,9 @@ public class ScoreManager : MonoBehaviour, IGlobalScroll
     private float _scorePerSecond;
     private float _scoreCount;
     private float _highScoreCount;
-    [Inject] private GlobalUpdateManager _updateManager;
-    [Inject] private GlobalEventManager _eventManager;
+
+    [Inject] private readonly GlobalUpdateManager _updateManager;
+    [Inject] private readonly GlobalEventManager _eventManager;
 
     #region MONO
     private void Awake()
@@ -108,7 +109,6 @@ public class ScoreManager : MonoBehaviour, IGlobalScroll
             _gameMessage.ShowNewScoreMessage();
         }
     }
-
 
     public void SetScrollSpeed(float scrollSpeed)
     {

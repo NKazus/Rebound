@@ -8,8 +8,9 @@ public class Reflection : MonoBehaviour
     private ObjectColor _objectColor;
     private Transform _transform;
     private Tween _punchScaleTween;
-    [Inject] private GlobalEventManager _eventManager;
-    [Inject] private ReflectionController _controller;
+
+    [Inject] private readonly GlobalEventManager _eventManager;
+    [Inject] private readonly ReflectionController _controller;
 
     #region MONO
     private void Awake()
@@ -43,6 +44,4 @@ public class Reflection : MonoBehaviour
     {
         _objectColor.SetColor(intensity);
     }
-
-    
 }

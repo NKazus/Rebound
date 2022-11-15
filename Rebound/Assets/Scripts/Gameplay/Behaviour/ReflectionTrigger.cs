@@ -9,8 +9,9 @@ public class ReflectionTrigger : MonoBehaviour
     private ObjectColor _triggerColor;
     private float _activationTime = 1f;
     private Tween _shakeScaleTween;
-    [Inject] private PoolManager _pool;
-    [Inject] private GlobalEventManager _eventManager;
+
+    [Inject] private readonly PoolManager _pool;
+    [Inject] private readonly GlobalEventManager _eventManager;
 
     #region MONO
     private void Awake()
@@ -35,5 +36,4 @@ public class ReflectionTrigger : MonoBehaviour
         _activationTime = duration;
         _triggerColor.SetColor(colorValue);
     }
-
 }

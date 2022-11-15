@@ -8,13 +8,16 @@ public class PlayerMovement : MonoBehaviour
     private Transform _transform;
     private float _movementSpeedAbs;
     private float _movementSpeedSign;
-    [Inject] private GlobalEventManager _eventManager;
+    private Vector2 _initialPosition;
+
+    [Inject] private readonly GlobalEventManager _eventManager;
 
     #region MONO
     private void Awake()
     {
         _playerRigidBody = GetComponent<Rigidbody2D>();
         _transform = transform;
+        _initialPosition = _transform.position;
     }
 
     private void OnEnable()
@@ -29,7 +32,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        _transform.DOScale(0.8f, 0.05f).SetId(this).Play();
+        _transform.DOScale(1.1f, 0.05f).SetId(this).Play();
     }
 
     private void OnCollisionExit2D(Collision2D collision)
@@ -72,4 +75,11 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    public void ResetPlayerPosition()
+    {
+        _transform.localScale = Vector2.zero;
+        _transform.position = _initialPosition;
+        _transform.DOScale(1f, 0.1f);
+        ReversePlayerSpeedSign();
+    }
 }

@@ -4,8 +4,9 @@ using Zenject;
 
 public class PoolManager
 {
-    [Inject] private DiContainer diContainer;
     private Dictionary<string, LinkedList<GameObject>> _poolDictionary = new Dictionary<string, LinkedList<GameObject>>();
+
+    [Inject] private readonly DiContainer diContainer;
 
     public GameObject GetGameObjectFromPool(GameObject prefab)
     {
@@ -23,7 +24,6 @@ public class PoolManager
         }
 
         result = diContainer.InstantiatePrefab(prefab);
-        //result = Instantiate(prefab);
         result.name = prefab.name;
         return result;
     }

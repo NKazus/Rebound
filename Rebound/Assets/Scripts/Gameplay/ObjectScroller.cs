@@ -1,15 +1,17 @@
 using UnityEngine;
 using Zenject;
 
+[RequireComponent(typeof(Rigidbody2D))]
 public class ObjectScroller : MonoBehaviour, IGlobalScroll
 {
     private Rigidbody2D _rigidbody;
     private float _scrollSpeed;
     private float _despawnPosition;
     private Transform _localTransform;
-    [Inject] private GlobalUpdateManager _updateManager;
-    [Inject] private GlobalEventManager _eventManager;
-    [Inject] private PoolManager _pool;
+
+    [Inject] private readonly GlobalUpdateManager _updateManager;
+    [Inject] private readonly GlobalEventManager _eventManager;
+    [Inject] private readonly PoolManager _pool;
 
     #region MONO
     private void Awake()
@@ -41,11 +43,9 @@ public class ObjectScroller : MonoBehaviour, IGlobalScroll
         }
     }
 
-
     public void SetScrollSpeed(float scrollSpeed)
     {
         _scrollSpeed = scrollSpeed;
         _rigidbody.velocity = new Vector2(0f, -_scrollSpeed);
     }
-
 }

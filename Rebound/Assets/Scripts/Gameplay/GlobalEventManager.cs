@@ -3,14 +3,13 @@ using UnityEngine;
 
 public class GlobalEventManager
 {
-    public event Action<Vector3> InitializeSpeedEvent;
+    public event Action<Vector2> InitializeSpeedEvent;
     public event Action<bool> GameStateEvent;
     public event Action<float> ResetScrollingSpeedEvent;
     public event Action<Func<float, float>, bool> CalculateSpeedEvent;
     public event Action<float, Color> ActivateReflectionEvent;
 
-
-    public void InitializeMovement(Vector3 initialDirection)// initial move
+    public void InitializeMovement(Vector2 initialDirection)// initial move
     {
         InitializeSpeedEvent?.Invoke(initialDirection);
         GameStateEvent?.Invoke(true);
