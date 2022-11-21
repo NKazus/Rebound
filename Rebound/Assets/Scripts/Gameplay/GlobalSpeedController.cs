@@ -86,7 +86,7 @@ public class GlobalSpeedController : MonoBehaviour
     private void ShareSpeedChanges()
     {
         _playerMovement.SetPlayerSpeedAbs(_playerSpeed);
-        _playerColor.SetColor(_playerSpeed/_globalSpeed);
+        _playerColor.SetColor(_playerSpeed / _globalSpeed);
         _eventManager.UpdateScrollingSpeed(ScrollSpeed);
     }
 }

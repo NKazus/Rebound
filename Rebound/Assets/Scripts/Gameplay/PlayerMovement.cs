@@ -63,6 +63,11 @@ public class PlayerMovement : MonoBehaviour
         _movementSpeedSign = initialSpeedSign;
     }
 
+    public float GetPlayerSpeed()
+    {
+        return _movementSpeedAbs * _movementSpeedSign;
+    }
+
     public void Eliminate(bool isActive)
     {
         if (!isActive)

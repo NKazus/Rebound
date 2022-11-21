@@ -7,5 +7,6 @@ public class NonMonobehInstaller : MonoInstaller
         EventManagerInstaller.Install(Container);
         PoolInstaller.Install(Container);
         RefractionProviderInstaller.Install(Container);
+        SoundProviderInstaller.Install(Container);
     }
 }

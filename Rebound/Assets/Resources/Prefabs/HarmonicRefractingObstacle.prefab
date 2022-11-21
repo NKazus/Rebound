@@ -151,8 +151,8 @@ MonoBehaviour:
   alphaTexture: {fileID: 2800000, guid: 192e99dd2dffbe74f8677d321f56ac0b, type: 3}
   intensity: 5
   initialGlowValue: 0
-  primaryColor: {r: 1, g: 0.107547104, b: 0.107547104, a: 1}
-  secondaryColor: {r: 1, g: 0.3405725, b: 0.069811285, a: 1}
+  primaryColor: {r: 1, g: 0.050943315, b: 0.050943315, a: 1}
+  secondaryColor: {r: 1, g: 0.23222516, b: 0.07058823, a: 1}
 --- !u!114 &-3512714758834085956
 MonoBehaviour:
   m_ObjectHideFlags: 0

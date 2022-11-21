@@ -7,17 +7,20 @@ public class ReflectionTrigger : MonoBehaviour
 {
     private Transform _transform;
     private ObjectColor _triggerColor;
+    private SoundEffect _soundEffect;
     private float _activationTime = 1f;
     private Tween _shakeScaleTween;
 
     [Inject] private readonly PoolManager _pool;
     [Inject] private readonly GlobalEventManager _eventManager;
+    [Inject] private readonly SoundProvider _soundProvider;
 
     #region MONO
     private void Awake()
     {
         _transform = transform;
         _triggerColor = GetComponent<ObjectColor>();
+        _soundEffect = _soundProvider.GetSoundEffect(SoundType.Trigger);
         _shakeScaleTween = _transform.DOShakeScale(0.5f, 0.5f, 10, 50).SetLink(gameObject).OnComplete(() => _pool.PutGameObjectToPool(gameObject));
     }
 
@@ -27,6 +30,7 @@ public class ReflectionTrigger : MonoBehaviour
         {
             _eventManager.UpdateReflection(_activationTime, _triggerColor.GetColor());
             _shakeScaleTween.Play();
+            _soundEffect.PlaySound();
         }
     }
     #endregion
