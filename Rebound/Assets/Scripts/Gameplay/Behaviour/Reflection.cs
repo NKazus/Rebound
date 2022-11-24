@@ -3,24 +3,20 @@ using UnityEngine;
 using Zenject;
 
 [RequireComponent(typeof(ObjectColor))]
-public class Reflection : MonoBehaviour
+public class Reflection : ObjectBehaviour
 {
-    private ObjectColor _objectColor;
-    private SoundEffect _soundEffect;
     private Transform _transform;
     private Tween _punchScaleTween;
 
-    [Inject] private readonly GlobalEventManager _eventManager;
     [Inject] private readonly ReflectionController _controller;
-    [Inject] private readonly SoundProvider _soundProvider;
 
     #region MONO
-    private void Awake()
+    protected override void Awake()
     {
-        _objectColor = GetComponent<ObjectColor>();
-        _soundEffect = _soundProvider.GetSoundEffect(SoundType.Reflection);
         _transform = transform;
         _punchScaleTween = _transform.DOPunchScale(new Vector3(0.2f, 0, 0), 0.1f, 5).SetLink(gameObject);
+        _soundType = SoundType.Reflection;
+        base.Awake();
     }
 
     private void OnEnable()

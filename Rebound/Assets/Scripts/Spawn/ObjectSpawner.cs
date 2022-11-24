@@ -67,13 +67,13 @@ public class ObjectSpawner : MonoBehaviour, IGlobalScroll
 
     protected virtual void SetSpawnObject(GameObject spawnObject)
     {
-        spawnObject.transform.localScale = new Vector3(RandomExtentions.NextFloat(randomizer, minScale, maxScale), 1f, 1f);
-        spawnObject.GetComponent<Refraction>().SetObjectParameters(RandomExtentions.NextFloat(randomizer, 0f, 1f));
+        spawnObject.transform.localScale = new Vector3(randomizer.NextFloat(minScale, maxScale), 1f, 1f);
+        spawnObject.GetComponent<Refraction>().SetObjectParameters(randomizer.NextFloat(0f, 1f));
     }
 
     protected virtual Vector3 CalculateSpawnPosition()
     {
-        _offset = RandomExtentions.NextFloat(randomizer, minOffset, maxOffset);
+        _offset = randomizer.NextFloat(minOffset, maxOffset);
         return new Vector3(spawnerPosition.x + _offset, spawnerPosition.y, spawnerPosition.z);     
     }
 

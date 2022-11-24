@@ -4,6 +4,11 @@ public class ReflectionSoundEffect : SoundEffect
 
     public override void PlaySound()
     {
-        _soundManager.PlayReflection();
+        _soundManager.PlayReflection(BaseReflection.IsActiveState);
+    }
+
+    public override void Setup(float value)
+    {
+        throw new System.NotImplementedException();
     }
 }

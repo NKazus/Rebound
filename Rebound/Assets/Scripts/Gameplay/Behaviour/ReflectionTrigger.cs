@@ -3,32 +3,28 @@ using UnityEngine;
 using Zenject;
 
 [RequireComponent(typeof(ObjectColor))]
-public class ReflectionTrigger : MonoBehaviour
+public class ReflectionTrigger : ObjectBehaviour
 {
     private Transform _transform;
-    private ObjectColor _triggerColor;
-    private SoundEffect _soundEffect;
     private float _activationTime = 1f;
     private Tween _shakeScaleTween;
 
     [Inject] private readonly PoolManager _pool;
-    [Inject] private readonly GlobalEventManager _eventManager;
-    [Inject] private readonly SoundProvider _soundProvider;
 
     #region MONO
-    private void Awake()
+    protected override void Awake()
     {
         _transform = transform;
-        _triggerColor = GetComponent<ObjectColor>();
-        _soundEffect = _soundProvider.GetSoundEffect(SoundType.Trigger);
         _shakeScaleTween = _transform.DOShakeScale(0.5f, 0.5f, 10, 50).SetLink(gameObject).OnComplete(() => _pool.PutGameObjectToPool(gameObject));
+        _soundType = SoundType.Trigger;
+        base.Awake();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            _eventManager.UpdateReflection(_activationTime, _triggerColor.GetColor());
+            _eventManager.UpdateReflection(_activationTime, _objectColor.GetColor());
             _shakeScaleTween.Play();
             _soundEffect.PlaySound();
         }
@@ -38,6 +34,7 @@ public class ReflectionTrigger : MonoBehaviour
     public void SetTriggerParameters(float duration, float colorValue)
     {
         _activationTime = duration;
-        _triggerColor.SetColor(colorValue);
+        _objectColor.SetColor(colorValue);
+        _soundEffect.Setup(Mathf.Clamp(colorValue, 0.5f, 1f));
     }
 }

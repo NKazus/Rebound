@@ -19,11 +19,11 @@ public class TriggerSpawner : ObjectSpawner
 
     protected override void SetSpawnObject(GameObject spawnObject)
     {
-        float scale = RandomExtentions.NextFloat(randomizer, minScale, maxScale);
+        float scale = randomizer.NextFloat(minScale, maxScale);
         spawnObject.transform.localScale = new Vector3(scale, scale, 1f);
         spawnObject.GetComponent<ReflectionTrigger>().
-            SetTriggerParameters(RandomExtentions.NextFloat(randomizer, minActivationTime, maxActivationTime), 
-            RandomExtentions.NextFloat(randomizer, 0f, 1f));
+            SetTriggerParameters(randomizer.NextFloat(minActivationTime, maxActivationTime),
+            randomizer.NextFloat(0f, 1f));
     }
 
     protected override Vector3 CalculateSpawnPosition()

@@ -8,4 +8,6 @@ public abstract class SoundEffect
     }
 
     public abstract void PlaySound();
+
+    public abstract void Setup(float value);
 }

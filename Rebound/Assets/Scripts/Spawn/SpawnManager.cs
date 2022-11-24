@@ -88,7 +88,7 @@ public class SpawnManager : MonoBehaviour, IGlobalScroll
             _spawnTimeIntervals = new float[_spawnerCount];
             for(int i = 0; i < _spawnerCount - 1; i++)
             {
-                _spawnTimeIntervals[i] = RandomExtentions.NextFloat(_random, maxSpawnTimeInterval / 2, maxSpawnTimeInterval);
+                _spawnTimeIntervals[i] = _random.NextFloat(maxSpawnTimeInterval / 2, maxSpawnTimeInterval);
                 if (_spawnTimeIntervals[i] > currentMax)
                 {
                     currentMax = _spawnTimeIntervals[i];

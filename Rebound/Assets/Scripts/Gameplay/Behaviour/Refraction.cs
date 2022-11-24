@@ -2,24 +2,20 @@ using UnityEngine;
 using Zenject;
 
 [RequireComponent(typeof(ObjectColor))]
-public class Refraction : MonoBehaviour
+public class Refraction : ObjectBehaviour
 {
     [SerializeField] private RefractionType type;
 
     private IRefraction _refraction;
-    private ObjectColor _objectColor;
-    private  SoundEffect _soundEffect;
 
-    [Inject] private readonly GlobalEventManager _eventManager;
     [Inject] private readonly RefractionProvider _refractionProvider;
-    [Inject] private readonly SoundProvider _soundProvider;
 
     #region MONO
-    private void Awake()
+    protected override void Awake()
     {
         _refraction = _refractionProvider.GetRefraction(type);
-        _objectColor = GetComponent<ObjectColor>();
-        _soundEffect = _soundProvider.GetSoundEffect(SoundType.Refraction);
+        _soundType = SoundType.Refraction;
+        base.Awake();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -44,6 +40,7 @@ public class Refraction : MonoBehaviour
     public void SetObjectParameters(float colorValue)
     {
         _objectColor.SetColor(colorValue);
+        _soundEffect.Setup(Mathf.Clamp(colorValue, 0.5f, 1f));
     }
 }
 

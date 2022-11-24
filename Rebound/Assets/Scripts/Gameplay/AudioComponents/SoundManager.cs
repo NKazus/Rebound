@@ -16,39 +16,67 @@ public class SoundManager : MonoBehaviour
         {
             switch (audio.clip.name)
             {
-                case "ambient": _ambientMusic = audio; _ambientMusic.loop = true; break;
-                case "refraction": _refractionSound = audio; break;
-                case "reflection": _reflectionSound = audio; break;
-                case "trigger": _triggerSound = audio; break;
+                case string clipName when clipName.Contains("ambient"): _ambientMusic = audio; _ambientMusic.loop = true; break;
+                case string clipName when clipName.Contains("refraction"): _refractionSound = audio; break;
+                case string clipName when clipName.Contains("reflection"): _reflectionSound = audio; break;
+                case string clipName when clipName.Contains("trigger"): _triggerSound = audio; break;
                 default: throw new NotSupportedException(); 
             }
         }
     }
 
-    private void Play(AudioSource audio)
+    private void PlaySource(AudioSource audio)
     {
-        if (audio != null)
-        {
-            audio.Play();
-        }
-        else
+        audio.Play();
+    }
+
+    private void ValidateSource(AudioSource audio)
+    {
+        if(audio == null)
         {
             throw new NotImplementedException();
         }
     }
 
-    public void PlayRefraction()
+    public void PlayRefraction(float pitchValue)
     {
-        Play(_refractionSound);
+        try
+        {
+            ValidateSource(_refractionSound);
+            _refractionSound.pitch = pitchValue;
+            PlaySource(_refractionSound);
+        }
+        catch (NotImplementedException exception)
+        {
+            Debug.Log("Refraction AudioSource: " + exception);
+        }
     }
 
-    public void PlayReflection()
+    public void PlayReflection(bool isActive)
     {
-        Play(_reflectionSound);
+        try
+        {
+            ValidateSource(_reflectionSound);
+            _reflectionSound.pitch = isActive ? 0.7f : 0.9f;
+            PlaySource(_reflectionSound);
+        }
+        catch(NotImplementedException exception)
+        {
+            Debug.Log("Reflection AudioSource: " + exception);
+        }
     }
 
-    public void PlayTrigger()
+    public void PlayTrigger(float volumeValue)
     {
-        Play(_triggerSound);
+        try
+        {
+            ValidateSource(_triggerSound);
+            _triggerSound.volume = volumeValue;
+            PlaySource(_triggerSound);
+        }
+        catch (NotImplementedException exception)
+        {
+            Debug.Log("Trigger AudioSource: " + exception);
+        }       
     }
 }
