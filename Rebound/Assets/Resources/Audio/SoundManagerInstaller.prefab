@@ -50,6 +50,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 993448e0649062c4eb327fb66678e89b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mixerMasterGroup: {fileID: 24300002, guid: 58b087f611732b24c863ba01c037311a, type: 2}
 --- !u!114 &535009258789332303
 MonoBehaviour:
   m_ObjectHideFlags: 0

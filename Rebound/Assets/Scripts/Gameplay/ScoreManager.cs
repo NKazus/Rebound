@@ -31,11 +31,13 @@ public class ScoreManager : MonoBehaviour, IGlobalScroll
     {
         _eventManager.ResetScrollingSpeedEvent += SetScrollSpeed;
         _eventManager.GameStateEvent += ChangeScoreState;
+        _eventManager.PauseEvent += Pause;
     }
     private void OnDisable()
     {
         _eventManager.ResetScrollingSpeedEvent -= SetScrollSpeed;
         _eventManager.GameStateEvent -= ChangeScoreState;
+        _eventManager.PauseEvent -= Pause;
         DOTween.Kill(this);
     }
     #endregion
@@ -87,12 +89,16 @@ public class ScoreManager : MonoBehaviour, IGlobalScroll
         }
     }
 
+    private void Pause(bool isResumed)
+    {
+        scorePanel.SetActive(isResumed);
+    }
+
     private int CheckHighScore()
     {
         if (PlayerPrefs.HasKey("_HighScore"))
         {
-            return PlayerPrefs.GetInt("_HighScore");
-            
+            return PlayerPrefs.GetInt("_HighScore");            
         }
         else
         {

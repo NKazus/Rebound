@@ -31,13 +31,20 @@ public class Reloader : MonoBehaviour
         {
             restartButton.gameObject.SetActive(true);
             restartButton.onClick.AddListener(ReloadScene);
+            _eventManager.PauseEvent += Pause;
         }
         else
         {
             restartButton.onClick.RemoveListener(ReloadScene);
             restartButton.gameObject.SetActive(false);
             _updateManager.GlobalUpdateEvent += LocalUpdate;
+            _eventManager.PauseEvent -= Pause;
         }
+    }
+
+    private void Pause(bool resumed)
+    {
+        restartButton.gameObject.SetActive(resumed);
     }
 
 #if UNITY_EDITOR

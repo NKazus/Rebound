@@ -1,8 +1,11 @@
 using System;
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class SoundManager : MonoBehaviour
 {
+    [SerializeField] private AudioMixerGroup mixerMasterGroup;
+
     private AudioSource[] _audioSources;
     private AudioSource _ambientMusic;
     private AudioSource _reflectionSound;
@@ -79,4 +82,28 @@ public class SoundManager : MonoBehaviour
             Debug.Log("Trigger AudioSource: " + exception);
         }       
     }
+
+    #region SETTINGS
+    public void SetGlobalVolume(float volumeValue)
+    {
+        mixerMasterGroup.audioMixer.SetFloat("_MasterVolume", Mathf.Lerp(-80, 0, volumeValue));
+    }
+
+    public void SetEffectsVolume(float volumeValue)
+    {
+        mixerMasterGroup.audioMixer.SetFloat("_EffectsVolume", Mathf.Lerp(-80, 0, volumeValue));
+    }
+
+    public void TurnMisic(bool isMusicOn)
+    {
+        if (isMusicOn)
+        {
+            mixerMasterGroup.audioMixer.SetFloat("_MusicVolume", 0);
+        }
+        else
+        {
+            mixerMasterGroup.audioMixer.SetFloat("_MusicVolume", -80);
+        }
+    }
+    #endregion
 }

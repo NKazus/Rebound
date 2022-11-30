@@ -16,6 +16,7 @@ public class SpeedLevel : MonoBehaviour, IGlobalScroll
     [Inject] private readonly GlobalEventManager _eventManager;
     [Inject] private readonly InitConfig _initConfig;
 
+    #region MONO
     private void Awake()
     {
         _minGlobalSpeed = _initConfig.InitialGlobalSpeed;
@@ -39,24 +40,31 @@ public class SpeedLevel : MonoBehaviour, IGlobalScroll
     private void OnDisable()
     {
         _eventManager.ResetScrollingSpeedEvent -= SetScrollSpeed;
-        _eventManager.GameStateEvent -= ChangeState;
+        _eventManager.GameStateEvent -= ChangeState; 
     }
+    #endregion
 
     private void ChangeState(bool isActive)
     {
+        speedLevelPanel.SetActive(isActive);
         if (isActive)
         {
-            speedLevelPanel.SetActive(true);
             for(int i = 0; i < _levelsNumber; i++)
             {
                 levels[i].SetInitialColor(color);
             }
             levels[_currentLevel].ActivateGlowEffect(true);
+            _eventManager.PauseEvent += Pause;
         }
         else
         {
-            speedLevelPanel.SetActive(false);
+            _eventManager.PauseEvent -= Pause;
         }
+    }
+
+    private void Pause(bool isResumed)
+    {
+        speedLevelPanel.SetActive(isResumed);
     }
 
     public void SetScrollSpeed(float scrollSpeed)

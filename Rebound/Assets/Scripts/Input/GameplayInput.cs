@@ -22,9 +22,11 @@ public class GameplayInput : MonoBehaviour
     private void OnEnable()
     {
         _eventManager.GameStateEvent += ChangeInputState;
+        _eventManager.PauseEvent += ChangeInputState;
     }
     private void OnDisable()
     {
+        _eventManager.PauseEvent -= ChangeInputState;
         _eventManager.GameStateEvent -= ChangeInputState;
         _updateManager.GlobalUpdateEvent -= LocalUpdate;
     }

@@ -2,8 +2,9 @@ using UnityEngine;
 
 public class InputValidator : MonoBehaviour
 {
-    [SerializeField] private RectTransform _reloadArea;
-    [SerializeField] private RectTransform _restartButtonArea;
+    [SerializeField] private RectTransform reloadArea;
+    [SerializeField] private RectTransform restartButtonArea;
+    [SerializeField] private RectTransform pauseButtonArea;
 
     private Camera _mainCamera;
 
@@ -14,13 +15,20 @@ public class InputValidator : MonoBehaviour
 
     public bool ValidateGameplayInput(Vector2 inputPosition)
     {
-        bool isValid = !RectTransformUtility.RectangleContainsScreenPoint(_restartButtonArea, inputPosition, _mainCamera);
-        return isValid;
+        if(RectTransformUtility.RectangleContainsScreenPoint(restartButtonArea, inputPosition, _mainCamera))
+        {
+            return false;
+        }
+        if (RectTransformUtility.RectangleContainsScreenPoint(pauseButtonArea, inputPosition, _mainCamera))
+        {
+            return false;
+        }
+        return true;
     }
 
     public bool ValidateReplayInput(Vector2 inputPosition)
     {
-        bool isValid = RectTransformUtility.RectangleContainsScreenPoint(_reloadArea, inputPosition, _mainCamera);
+        bool isValid = RectTransformUtility.RectangleContainsScreenPoint(reloadArea, inputPosition, _mainCamera);
         return isValid;
     }
 }

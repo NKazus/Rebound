@@ -41,8 +41,7 @@ public class SpawnManager : MonoBehaviour, IGlobalScroll
         _eventManager.GameStateEvent -= ChangeSpawnState;
         _eventManager.ResetScrollingSpeedEvent -= SetScrollSpeed;
 
-        CancelTokenSource();
-        _spawnCancelTokenSource.Dispose();
+        CancelTokenSource(false);
     }
     #endregion
 
@@ -55,17 +54,33 @@ public class SpawnManager : MonoBehaviour, IGlobalScroll
                 objectSpawners[i].SetSpawningTime(_spawnTimeIntervals[i]);
                 objectSpawners[i].StartSpawning(_spawnCancelTokenSource.Token);
             }
-            _updateManager.GlobalFixedUpdateEvent += LocalFixedUpdate;          
+            _updateManager.GlobalFixedUpdateEvent += LocalFixedUpdate;
+            _eventManager.PauseEvent += Pause;
         }
         else
         {
             _updateManager.GlobalFixedUpdateEvent -= LocalFixedUpdate;
             _eventManager.ResetScrollingSpeedEvent -= SetScrollSpeed;
+            _eventManager.PauseEvent -= Pause;
 
-            CancelTokenSource();
+            CancelTokenSource(false);
         }
     }
 
+    private void Pause(bool isResumed)
+    {
+        if (isResumed)
+        {
+            for (int i = 0; i < _spawnerCount; i++)
+            {
+                objectSpawners[i].StartSpawning(_spawnCancelTokenSource.Token);
+            }            
+        }
+        else
+        {
+            CancelTokenSource(true);
+        }      
+    }
     private void LocalFixedUpdate()
     {
         _currentCheckValue += Time.fixedDeltaTime * _scrollSpeed;
@@ -119,11 +134,16 @@ public class SpawnManager : MonoBehaviour, IGlobalScroll
         }
     }
 
-    private void CancelTokenSource()
+    private void CancelTokenSource(bool renew)
     {
         if(!_spawnCancelTokenSource.IsCancellationRequested)
         {
             _spawnCancelTokenSource.Cancel();
+        }
+        _spawnCancelTokenSource.Dispose();
+        if (renew)
+        {
+            _spawnCancelTokenSource = new CancellationTokenSource();
         }
     }
 

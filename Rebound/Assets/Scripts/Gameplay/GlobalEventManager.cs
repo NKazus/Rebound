@@ -8,6 +8,7 @@ public class GlobalEventManager
     public event Action<float> ResetScrollingSpeedEvent;
     public event Action<Func<float, float>, bool> CalculateSpeedEvent;
     public event Action<float, Color> ActivateReflectionEvent;
+    public event Action<bool> PauseEvent;
 
     public void InitializeMovement(Vector2 initialDirection)// initial move
     {
@@ -33,5 +34,10 @@ public class GlobalEventManager
     public void EliminatePlayer()//speed controller
     {
         GameStateEvent?.Invoke(false);
+    }
+
+    public void PauseGame(bool isResumed)//pause menu
+    {
+        PauseEvent?.Invoke(isResumed);
     }
 }
