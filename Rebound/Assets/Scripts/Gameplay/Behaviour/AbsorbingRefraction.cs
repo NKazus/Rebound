@@ -4,4 +4,9 @@ public class AbsorbingRefraction : IRefraction
     {
         return -1f;
     }
+
+    public void Setup(float coefficient)
+    {
+        return;
+    }
 }

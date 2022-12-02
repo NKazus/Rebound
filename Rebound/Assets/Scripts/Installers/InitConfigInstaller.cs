@@ -6,6 +6,6 @@ public class InitConfigInstaller : ScriptableObjectInstaller<InitConfigInstaller
 {
     public override void InstallBindings()
     {
-        Container.Bind<InitConfig>().FromScriptableObjectResource("InitConfig").AsSingle();
+        Container.Bind<InitConfig>().FromScriptableObjectResource("Configs/InitConfig").AsSingle();
     }
 }

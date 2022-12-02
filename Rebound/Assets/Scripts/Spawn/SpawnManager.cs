@@ -15,15 +15,13 @@ public class SpawnManager : MonoBehaviour, IGlobalScroll
     private float _scrollSpeed;
     private System.Random _random;
     private CancellationTokenSource _spawnCancelTokenSource;
+
     [Inject] private readonly GlobalUpdateManager _updateManager;
     [Inject] private readonly GlobalEventManager _eventManager;
-    [Inject] private readonly InitConfig _initConfig;
 
     #region MONO
     private void Awake()
     {
-        _maxCheckValue = _initConfig.InitialGlobalSpeed * spawnUpdateTimeCoefficient;
-
         _spawnCancelTokenSource = new CancellationTokenSource();
         _random = new System.Random();
 
@@ -154,5 +152,11 @@ public class SpawnManager : MonoBehaviour, IGlobalScroll
         {
             objectSpawners[i].SetScrollSpeed(_scrollSpeed);
         }
+    }
+
+    [Inject]
+    public void InitializeMaxCheckValue(InitConfig initConfig)
+    {
+        _maxCheckValue = initConfig.InitialGlobalSpeed * spawnUpdateTimeCoefficient;
     }
 }

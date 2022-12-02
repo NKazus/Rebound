@@ -13,7 +13,6 @@ public class InitialMove : MonoBehaviour
     private float _maxInitialAngle = 75;
 
     [Inject] private readonly GlobalEventManager _eventManager;
-    [Inject] private readonly InitConfig _initConfig;
 
     #region MONO
     private void Awake()
@@ -23,7 +22,6 @@ public class InitialMove : MonoBehaviour
 
         _lineRenderer = GetComponent<LineRenderer>();
 
-        _maxInitialAngle = _initConfig.MaxInitialAngle;
         _defaultDirection = Quaternion.AngleAxis(-_maxInitialAngle, Vector3.forward) * Vector3.up;
     }
 
@@ -90,5 +88,11 @@ public class InitialMove : MonoBehaviour
     {
         _lineRenderer.SetPosition(0, _playerPosition);
         _lineRenderer.SetPosition(1, _initialDirection.normalized * 2f + _playerPosition);
+    }
+
+    [Inject]
+    public void InitializeAngle(InitConfig initConfig)
+    {
+        _maxInitialAngle = initConfig.MaxInitialAngle;
     }
 }

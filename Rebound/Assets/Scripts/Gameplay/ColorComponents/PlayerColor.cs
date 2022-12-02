@@ -11,13 +11,10 @@ public class PlayerColor : ObjectColor
     private float _currentAngle;
     private int _leftIntervalIndex;
     private float _interpolation;
-
-    [Inject] private readonly InitConfig _initConfig;
    
     protected override void Awake()
     {
         base.Awake();
-        _minDeltaAngle = _initConfig.MinDeflectionAngle;
         _intervalLength = (90f - _minDeltaAngle) / (colors.Length - 1);
         objectMaterial.SetColor("_Color", Color.white * intensity / 2);
     }
@@ -30,5 +27,11 @@ public class PlayerColor : ObjectColor
         currentColor = Color.Lerp(colors[_leftIntervalIndex], colors[_leftIntervalIndex + 1], _interpolation);
         currentColor.a = 1f;
         objectMaterial.DOColor(currentColor * intensity, "_Color", 0.2f).SetLink(gameObject).Play();
+    }
+
+    [Inject]
+    public void InitializeAngle(InitConfig initConfig)
+    {
+        _minDeltaAngle = initConfig.MinDeflectionAngle;
     }
 }

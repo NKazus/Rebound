@@ -26,13 +26,10 @@ public class ObjectSpawner : MonoBehaviour, IGlobalScroll
     private int _spawnObjectsCount;
 
     [Inject] private readonly PoolManager _pool;
-    [Inject] private readonly InitConfig _initConfig;
 
     #region MONO
     protected void Awake()
-    {
-        _initialSpeedModifyer = _initConfig.InitialGlobalSpeed;
-
+    {      
         randomizer = new System.Random();
         _spawnObjectsCount = spawnObjectsPrefabs.Length;
     }
@@ -85,5 +82,11 @@ public class ObjectSpawner : MonoBehaviour, IGlobalScroll
     public void SetScrollSpeed(float scrollSpeed)
     {
         _speedModifyer = scrollSpeed;
+    }
+
+    [Inject]
+    public void InitializeSpeedModifyer(InitConfig initConfig)
+    {
+        _initialSpeedModifyer = initConfig.InitialGlobalSpeed;
     }
 }

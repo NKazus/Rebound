@@ -58,8 +58,9 @@ public abstract class BaseReflection
 
 public class ReducingReflection : BaseReflection
 {
+    private float _reducingCoefficient = 0.05f;
     public ReducingReflection(Color initialColor) { IsActiveState = true; ReflectionColor = initialColor; }
-    public override float Reflect(float value) { return value -= value * 0.05f; }
+    public override float Reflect(float value) { return value -= value * _reducingCoefficient; }
     public override BaseReflection SwitchMode(Color value) { return new SimpleReflection(value); }
 }
 

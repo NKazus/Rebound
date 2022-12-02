@@ -7,6 +7,7 @@ public class ReflectionTrigger : ObjectBehaviour
 {
     private Transform _transform;
     private float _activationTime = 1f;
+    private float _activationCoefficient = 1f;
     private Tween _shakeScaleTween;
 
     [Inject] private readonly PoolManager _pool;
@@ -33,8 +34,14 @@ public class ReflectionTrigger : ObjectBehaviour
 
     public void SetTriggerParameters(float duration, float colorValue)
     {
-        _activationTime = duration;
+        _activationTime = duration * _activationCoefficient;
         _objectColor.SetColor(colorValue);
         _soundEffect.Setup(Mathf.Clamp(colorValue, 0.5f, 1f));
+    }
+
+    [Inject]
+    public  void SetupDifficulty(DifficultyConfig difficultyConfig)
+    {
+        _activationCoefficient = difficultyConfig.TriggerDuration;
     }
 }

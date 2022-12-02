@@ -17,19 +17,8 @@ public class GlobalSpeedController : MonoBehaviour
     [Inject] private readonly PlayerMovement _playerMovement;
     [Inject] private readonly PlayerColor _playerColor;
     [Inject] private readonly GlobalEventManager _eventManager;
-    [Inject] private readonly InitConfig _initConfig;
 
     #region MONO
-    private void Awake()
-    {
-        _globalSpeed = _initConfig.InitialGlobalSpeed;
-        _maxScrollSpeed = _initConfig.MaxScrollSpeed;
-        _minScrollSpeed = _globalSpeed * Mathf.Cos(_initConfig.MaxInitialAngle * Mathf.Deg2Rad);
-
-        _deltaSpeedAngle = _initConfig.MinDeflectionAngle;
-        _deltaCosine = Mathf.Cos(_deltaSpeedAngle * Mathf.Deg2Rad);
-    }
-
     private void OnEnable()
     {
         _eventManager.InitializeSpeedEvent += InitializeSpeedParameters;
@@ -88,6 +77,17 @@ public class GlobalSpeedController : MonoBehaviour
         _playerMovement.SetPlayerSpeedAbs(_playerSpeed);
         _playerColor.SetColor(_playerSpeed / _globalSpeed);
         _eventManager.UpdateScrollingSpeed(ScrollSpeed);
+    }
+
+    [Inject]
+    public void InitializeConfigs(InitConfig initConfig, DifficultyConfig difficultyConfig)
+    {
+        _globalSpeed = initConfig.InitialGlobalSpeed * difficultyConfig.InitialSpeedCoefficient;
+        _maxScrollSpeed = initConfig.MaxScrollSpeed * difficultyConfig.GlobalSpeedCoefficient;
+        _minScrollSpeed = _globalSpeed * Mathf.Cos(initConfig.MaxInitialAngle * Mathf.Deg2Rad);
+
+        _deltaSpeedAngle = initConfig.MinDeflectionAngle;
+        _deltaCosine = Mathf.Cos(_deltaSpeedAngle * Mathf.Deg2Rad);
     }
 }
 

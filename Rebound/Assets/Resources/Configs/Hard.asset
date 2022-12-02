@@ -9,10 +9,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e27f831910ed09b4a993364b6b2f6e15, type: 3}
-  m_Name: InitConfig
+  m_Script: {fileID: 11500000, guid: acbdc8f48ab14d74fa2336b8d78d8f00, type: 3}
+  m_Name: Hard
   m_EditorClassIdentifier: 
-  _initialGlobalSpeed: 6
-  _maxScrollSpeed: 20
-  _maxInitialAngle: 75
-  _minDeflectionAngle: 10
+  difficultyLevel: 3
+  globalSpeedCoefficient: 1.5
+  initialSpeedCoefficient: 1.5
+  triggerDuration: 1.5
+  simpleCoefficient: 0.5
+  harmonicCoefficient: 1.5
+  boostingCoefficient: 1.25

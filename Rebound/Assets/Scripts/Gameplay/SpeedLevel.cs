@@ -14,14 +14,10 @@ public class SpeedLevel : MonoBehaviour, IGlobalScroll
     private int _currentLevel;
 
     [Inject] private readonly GlobalEventManager _eventManager;
-    [Inject] private readonly InitConfig _initConfig;
 
     #region MONO
     private void Awake()
-    {
-        _minGlobalSpeed = _initConfig.InitialGlobalSpeed;
-        _maxGlobalSpeed = _initConfig.MaxScrollSpeed * Mathf.Cos(_initConfig.MinDeflectionAngle * Mathf.Deg2Rad);
-
+    {      
         _levelsNumber = levels.Length;
         _speedBoundaryValues = new float[_levelsNumber - 1];
         float speedDelta = (_maxGlobalSpeed - _minGlobalSpeed) / _levelsNumber;
@@ -74,5 +70,12 @@ public class SpeedLevel : MonoBehaviour, IGlobalScroll
             _currentLevel++;
             levels[_currentLevel].ActivateGlowEffect(true);
         }
+    }
+
+    [Inject]
+    public void InitializeGlobalSpeed(InitConfig initConfig, DifficultyConfig difficultyConfig)
+    {
+        _minGlobalSpeed = initConfig.InitialGlobalSpeed;
+        _maxGlobalSpeed = initConfig.MaxScrollSpeed * Mathf.Cos(initConfig.MinDeflectionAngle * Mathf.Deg2Rad) * difficultyConfig.GlobalSpeedCoefficient;
     }
 }

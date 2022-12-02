@@ -10,7 +10,12 @@ public enum SoundType
 
 public class SoundProvider
 {
-    [Inject] private readonly SoundManager _soundManager;
+    private readonly SoundManager _soundManager;
+
+    public SoundProvider(SoundManager soundManager)
+    {
+        _soundManager = soundManager;
+    }
 
     public SoundEffect GetSoundEffect(SoundType type)
     {

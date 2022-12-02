@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using Zenject;
 
@@ -8,12 +9,9 @@ public class Refraction : ObjectBehaviour
 
     private IRefraction _refraction;
 
-    [Inject] private readonly RefractionProvider _refractionProvider;
-
     #region MONO
     protected override void Awake()
     {
-        _refraction = _refractionProvider.GetRefraction(type);
         _soundType = SoundType.Refraction;
         base.Awake();
     }
@@ -42,9 +40,31 @@ public class Refraction : ObjectBehaviour
         _objectColor.SetColor(colorValue);
         _soundEffect.Setup(Mathf.Clamp(colorValue, 0.5f, 1f));
     }
+
+    [Inject]
+    public void InitializeRefraction(RefractionProvider refractionProvider)
+    {
+        _refraction = refractionProvider.GetRefraction(type);
+    }
+
+    [Inject]
+    public void SetupDifficulty(DifficultyConfig difficultyConfig)
+    {
+        float coefficient = type switch
+        {
+            RefractionType.Simple => difficultyConfig.SimpleCoefficient,
+            RefractionType.Harmonic => difficultyConfig.HarmonicCoefficient,
+            RefractionType.Boosting => difficultyConfig.BoostingCoefficient,
+            RefractionType.Absorbing => 0f,
+            _ => throw new NotSupportedException()
+        };
+
+        _refraction.Setup(coefficient);
+    }
 }
 
 public interface IRefraction
 {
     public float Refract(float value);
+    public void Setup(float value);
 }
