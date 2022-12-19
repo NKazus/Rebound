@@ -19,6 +19,9 @@ public class DifficultyConfig : ScriptableObject
     [SerializeField] private float initialSpeedCoefficient;
     public float InitialSpeedCoefficient => initialSpeedCoefficient;
 
+    [SerializeField] private float reducingCoefficient;
+    public float ReducingCoefficient => reducingCoefficient;
+
     [SerializeField] private float triggerDuration;
     public float TriggerDuration => triggerDuration;
 

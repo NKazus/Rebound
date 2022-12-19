@@ -45,6 +45,11 @@ public class ReflectionController : MonoBehaviour
         }
         _remainingTime = _remainingTime > activationTime ? _remainingTime : activationTime;
     }
+
+    [Inject] public void SetupReflection(DifficultyConfig difficultyConfig)
+    {
+        ReducingReflection.SetCoefficient(difficultyConfig.ReducingCoefficient);
+    }
 }
 
 #region ReflectionMode
@@ -58,10 +63,11 @@ public abstract class BaseReflection
 
 public class ReducingReflection : BaseReflection
 {
-    private float _reducingCoefficient = 0.05f;
+    private static float _reducingCoefficient = 0.05f;
     public ReducingReflection(Color initialColor) { IsActiveState = true; ReflectionColor = initialColor; }
     public override float Reflect(float value) { return value -= value * _reducingCoefficient; }
     public override BaseReflection SwitchMode(Color value) { return new SimpleReflection(value); }
+    public static void SetCoefficient(float value) { _reducingCoefficient = value; }
 }
 
 public class SimpleReflection : BaseReflection
