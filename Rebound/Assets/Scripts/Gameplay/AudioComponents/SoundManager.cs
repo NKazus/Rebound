@@ -6,7 +6,7 @@ public class SoundManager : MonoBehaviour
 {
     [SerializeField] private AudioMixerGroup mixerMasterGroup;
 
-    private AudioSource[] _audioSources;
+    private AudioSource[] _audios;
     private AudioSource _ambientMusic;
     private AudioSource _reflectionSound;
     private AudioSource _refractionSound;
@@ -14,16 +14,16 @@ public class SoundManager : MonoBehaviour
 
     private void Awake()
     {
-        _audioSources = GetComponents<AudioSource>();
-        foreach(AudioSource audio in _audioSources)
+        _audios = gameObject.GetComponentsInChildren<AudioSource>();
+        foreach(AudioSource audio in _audios)
         {
-            switch (audio.clip.name)
+            switch (audio.gameObject.tag)
             {
-                case string clipName when clipName.Contains("ambient"): _ambientMusic = audio; _ambientMusic.loop = true; break;
-                case string clipName when clipName.Contains("refraction"): _refractionSound = audio; break;
-                case string clipName when clipName.Contains("reflection"): _reflectionSound = audio; break;
-                case string clipName when clipName.Contains("trigger"): _triggerSound = audio; break;
-                default: throw new NotSupportedException(); 
+                case "Ambient": _ambientMusic = audio; _ambientMusic.loop = true; break;
+                case "Refraction": _refractionSound = audio; break;
+                case "Reflection": _reflectionSound = audio; break;
+                case "Trigger": _triggerSound = audio; break;
+                default: throw new NotSupportedException();
             }
         }
     }

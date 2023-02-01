@@ -5,6 +5,10 @@ TagManager:
   serializedVersion: 2
   tags:
   - PoolLimit
+  - Ambient
+  - Reflection
+  - Refraction
+  - Trigger
   layers:
   - Default
   - TransparentFX
