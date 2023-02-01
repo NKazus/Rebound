@@ -6,7 +6,7 @@ public class BoostingRefraction : IRefraction
 
     public float Refract(float value)
     {
-        return value += Mathf.Log(value, _coefficient);
+        return value += Mathf.Log(value, _coefficient) / 2f;
     }
 
     public void Setup(float coefficient)

@@ -15,7 +15,7 @@ MonoBehaviour:
   difficultyLevel: 1
   globalSpeedCoefficient: 1
   initialSpeedCoefficient: 1
-  reducingCoefficient: 0.6
+  reducingCoefficient: 0.06
   triggerDuration: 1
   simpleCoefficient: 0.1
   harmonicCoefficient: 0.5
