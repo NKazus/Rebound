@@ -7,6 +7,7 @@ public class Reflection : ObjectBehaviour
 {
     private Transform _transform;
     private Tween _punchScaleTween;
+    private Transform _currentObject;
 
     [Inject] private readonly ReflectionController _controller;
 
@@ -26,8 +27,15 @@ public class Reflection : ObjectBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Player"))
+        _currentObject = collision.gameObject.transform;
+        float collisionSpeedSign;
+        if (_currentObject.CompareTag("Player"))
         {
+            collisionSpeedSign = Mathf.Sign(_currentObject.GetComponent<Rigidbody2D>().velocity.x);
+            if (collisionSpeedSign * (_transform.position.x - _currentObject.position.x) < 0)
+            {
+                return;
+            }
             _eventManager.CalculateSpeed(_controller.ReflectionState.Reflect, true);            
             _objectColor.ActivateGlowEffect(BaseReflection.IsActiveState);
             _punchScaleTween.Play();

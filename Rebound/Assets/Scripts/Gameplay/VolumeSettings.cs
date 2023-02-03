@@ -8,7 +8,7 @@ public class VolumeSettings : MonoBehaviour
     [SerializeField] private Slider effectsVolumeSlider;
     [SerializeField] private Toggle musicToggle;
 
-    [Inject] private SoundManager _soundManager;
+    [Inject] private readonly SoundManager _soundManager;
 
     #region MONO
     private void OnEnable()
@@ -17,6 +17,12 @@ public class VolumeSettings : MonoBehaviour
         effectsVolumeSlider.onValueChanged.AddListener(SetEffectsVolume);
         musicToggle.onValueChanged.AddListener(TurnMisic);
 
+        if (!PlayerPrefs.HasKey("_GlobalVolume"))
+        {
+            PlayerPrefs.SetFloat("_GlobalVolume", 1f);
+            PlayerPrefs.SetFloat("_EffectsVolume", 1f);
+            PlayerPrefs.SetInt("_MusicEnabled", 1);
+        }
         globalVolumeSlider.value = PlayerPrefs.GetFloat("_GlobalVolume");
         effectsVolumeSlider.value = PlayerPrefs.GetFloat("_EffectsVolume");
         musicToggle.isOn = PlayerPrefs.GetInt("_MusicEnabled") == 1;
