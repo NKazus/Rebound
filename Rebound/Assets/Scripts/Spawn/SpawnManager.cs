@@ -27,6 +27,10 @@ public class SpawnManager : MonoBehaviour, IGlobalScroll
 
         _spawnerCount = objectSpawners.Length;
         CalculateTimeIntervals();
+        for (int i = 0; i < _spawnerCount; i++)
+        {
+            objectSpawners[i].SetSpawningTime(_spawnTimeIntervals[i]);
+        }
     }
 
     private void OnEnable()
@@ -45,40 +49,39 @@ public class SpawnManager : MonoBehaviour, IGlobalScroll
 
     private void ChangeSpawnState(bool isActive)
     {
+        ActivateSpawn(isActive);
         if (isActive)
         {
-            for (int i = 0; i < _spawnerCount; i++)
-            {
-                objectSpawners[i].SetSpawningTime(_spawnTimeIntervals[i]);
-                objectSpawners[i].StartSpawning(_spawnCancelTokenSource.Token);
-            }
             _updateManager.GlobalFixedUpdateEvent += LocalFixedUpdate;
             _eventManager.PauseEvent += Pause;
         }
         else
         {
             _updateManager.GlobalFixedUpdateEvent -= LocalFixedUpdate;
-            _eventManager.ResetScrollingSpeedEvent -= SetScrollSpeed;
             _eventManager.PauseEvent -= Pause;
-
-            CancelTokenSource(false);
         }
     }
 
     private void Pause(bool isResumed)
     {
-        if (isResumed)
+        ActivateSpawn(isResumed);
+    }
+
+    private void ActivateSpawn(bool isActive)
+    {
+        if (isActive)
         {
             for (int i = 0; i < _spawnerCount; i++)
             {
                 objectSpawners[i].StartSpawning(_spawnCancelTokenSource.Token);
-            }            
+            }
         }
         else
         {
             CancelTokenSource(true);
-        }      
+        }
     }
+
     private void LocalFixedUpdate()
     {
         _currentCheckValue += Time.fixedDeltaTime * _scrollSpeed;

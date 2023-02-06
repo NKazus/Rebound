@@ -3,6 +3,7 @@ using UnityEngine;
 public class InputValidator : MonoBehaviour
 {
     [SerializeField] private RectTransform reloadArea;
+    [SerializeField] private RectTransform proceedArea;
     [SerializeField] private RectTransform restartButtonArea;
     [SerializeField] private RectTransform pauseButtonArea;
 
@@ -29,6 +30,12 @@ public class InputValidator : MonoBehaviour
     public bool ValidateReplayInput(Vector2 inputPosition)
     {
         bool isValid = RectTransformUtility.RectangleContainsScreenPoint(reloadArea, inputPosition, _mainCamera);
+        return isValid;
+    }
+
+    public bool ValidateRewardInput(Vector2 inputPosition)
+    {
+        bool isValid = RectTransformUtility.RectangleContainsScreenPoint(proceedArea, inputPosition, _mainCamera);
         return isValid;
     }
 }

@@ -13,24 +13,31 @@ public class DifficultyConfig : ScriptableObject
     [SerializeField] private DifficultyLevel difficultyLevel;
     public DifficultyLevel DifficultyLevel => difficultyLevel;
 
-    [SerializeField] private float globalSpeedCoefficient;
+    [SerializeField, Tooltip("Determines the maximum scroll speed multiplyer (< 2)")] 
+    private float globalSpeedCoefficient;
     public float GlobalSpeedCoefficient => globalSpeedCoefficient;
 
-    [SerializeField] private float initialSpeedCoefficient;
+    [SerializeField, Tooltip("Determines the initial global speed multiplyer (< 2)")] 
+    private float initialSpeedCoefficient;
     public float InitialSpeedCoefficient => initialSpeedCoefficient;
 
-    [SerializeField] private float reducingCoefficient;
+    [SerializeField, Tooltip("Speed reduction while reflection is active (percentage)")] 
+    private float reducingCoefficient;
     public float ReducingCoefficient => reducingCoefficient;
 
-    [SerializeField] private float triggerDuration;
+    [SerializeField, Tooltip("Reflection activation time multiplyer")] 
+    private float triggerDuration;
     public float TriggerDuration => triggerDuration;
 
-    [SerializeField] private float simpleCoefficient;
+    [SerializeField, Tooltip("Acceleration when passing a simple obstacle (float value < 0.5)")] 
+    private float simpleCoefficient;
     public float SimpleCoefficient => simpleCoefficient;
 
-    [SerializeField] private float harmonicCoefficient;
+    [SerializeField, Tooltip("Speed multiplyer when passing a harmonic obstacle")] 
+    private float harmonicCoefficient;
     public float HarmonicCoefficient => harmonicCoefficient;
 
-    [SerializeField] private float boostingCoefficient;
+    [SerializeField, Tooltip("Acceleration when passing a boosting obstacle")] 
+    private float boostingCoefficient;
     public float BoostingCoefficient => boostingCoefficient;
 }

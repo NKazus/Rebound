@@ -45,7 +45,7 @@ public class SpeedLevel : MonoBehaviour, IGlobalScroll
         speedLevelPanel.SetActive(isActive);
         if (isActive)
         {
-            for(int i = 0; i < _levelsNumber; i++)
+            for (int i = 0; i < _levelsNumber; i++)
             {
                 levels[i].SetInitialColor(color);
             }
@@ -55,6 +55,7 @@ public class SpeedLevel : MonoBehaviour, IGlobalScroll
         else
         {
             _eventManager.PauseEvent -= Pause;
+            _currentLevel = 0;
         }
     }
 

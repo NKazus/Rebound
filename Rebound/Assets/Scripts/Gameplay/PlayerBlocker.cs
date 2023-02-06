@@ -9,6 +9,8 @@ public class PlayerBlocker : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
+            Debug.Log("Blocker");
+            _player.ReversePlayerSpeedSign();
             _player.ResetPlayerPosition();
         }
     }

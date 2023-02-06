@@ -18,16 +18,18 @@ public class PlayerMovement : MonoBehaviour
         _playerRigidBody = GetComponent<Rigidbody2D>();
         _transform = transform;
         _initialPosition = _transform.position;
+
+        _eventManager.GameStateEvent += ActivatePlayer;
     }
 
-    private void OnEnable()
-    {
-        _eventManager.GameStateEvent += Eliminate;
-    }
     private void OnDisable()
     {
-        _eventManager.GameStateEvent -= Eliminate;
         DOTween.Kill(this);
+    }
+
+    private void OnDestroy()
+    {
+        _eventManager.GameStateEvent -= ActivatePlayer;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -68,15 +70,21 @@ public class PlayerMovement : MonoBehaviour
         return _movementSpeedAbs * _movementSpeedSign;
     }
 
-    public void Eliminate(bool isActive)
+    public void ActivatePlayer(bool isActive)
     {
-        if (!isActive)
+        if (isActive)
+        {
+            gameObject.SetActive(isActive);
+            ResetPlayerPosition();
+            SetPlayerSpeed();
+        }
+        else
         {
             _playerRigidBody.velocity = Vector2.zero;
             DOTween.Sequence().SetId(this)
                 .Append(_transform.DOShakeScale(0.3f, 0.5f, 5, 50))
                 .Append(_transform.DOScale(0f, 0.1f))
-                .OnComplete(() => gameObject.SetActive(false));
+                .OnComplete(() => gameObject.SetActive(isActive));
         }
     }
 
@@ -84,7 +92,6 @@ public class PlayerMovement : MonoBehaviour
     {
         _transform.localScale = Vector2.zero;
         _transform.position = _initialPosition;
-        _transform.DOScale(1f, 0.1f);
-        ReversePlayerSpeedSign();
+        _transform.DOScale(1f, 0.1f).SetId(this).Play();
     }
 }

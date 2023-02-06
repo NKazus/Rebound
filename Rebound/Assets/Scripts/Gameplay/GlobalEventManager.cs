@@ -5,6 +5,7 @@ public class GlobalEventManager
 {
     public event Action<Vector2> InitializeSpeedEvent;
     public event Action<bool> GameStateEvent;
+    public event Action ProceedGameEvent;
     public event Action<float> ResetScrollingSpeedEvent;
     public event Action<Func<float, float>, bool> CalculateSpeedEvent;
     public event Action<float, Color> ActivateReflectionEvent;
@@ -13,7 +14,16 @@ public class GlobalEventManager
     public void InitializeMovement(Vector2 initialDirection)// initial move
     {
         InitializeSpeedEvent?.Invoke(initialDirection);
-        GameStateEvent?.Invoke(true);
+    }
+
+    public void SwitchGameState(bool activate)//speedcontroller
+    {
+        GameStateEvent?.Invoke(activate);
+    }
+
+    public void ProceedGame()
+    {
+        ProceedGameEvent?.Invoke();
     }
 
     public void UpdateScrollingSpeed(float scrollingSpeed)//speedcontroller
@@ -29,11 +39,6 @@ public class GlobalEventManager
     public void UpdateReflection(float duration, Color triggerColor)//reflection trigger
     {
         ActivateReflectionEvent?.Invoke(duration, triggerColor);
-    }
-
-    public void EliminatePlayer()//speed controller
-    {
-        GameStateEvent?.Invoke(false);
     }
 
     public void PauseGame(bool isResumed)//pause menu

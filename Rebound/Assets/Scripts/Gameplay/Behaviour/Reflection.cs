@@ -8,6 +8,7 @@ public class Reflection : ObjectBehaviour
     private Transform _transform;
     private Tween _punchScaleTween;
     private Transform _currentObject;
+    private Rigidbody2D _playerRigidBody;
 
     [Inject] private readonly ReflectionController _controller;
 
@@ -31,7 +32,11 @@ public class Reflection : ObjectBehaviour
         float collisionSpeedSign;
         if (_currentObject.CompareTag("Player"))
         {
-            collisionSpeedSign = Mathf.Sign(_currentObject.GetComponent<Rigidbody2D>().velocity.x);
+            if(_playerRigidBody == null)
+            {
+                _playerRigidBody = _currentObject.GetComponent<Rigidbody2D>();
+            }
+            collisionSpeedSign = Mathf.Sign(_playerRigidBody.velocity.x);
             if (collisionSpeedSign * (_transform.position.x - _currentObject.position.x) < 0)
             {
                 return;

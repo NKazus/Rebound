@@ -31,13 +31,11 @@ public class ScoreManager : MonoBehaviour, IGlobalScroll
     {
         _eventManager.ResetScrollingSpeedEvent += SetScrollSpeed;
         _eventManager.GameStateEvent += ChangeScoreState;
-        _eventManager.PauseEvent += Pause;
     }
     private void OnDisable()
     {
         _eventManager.ResetScrollingSpeedEvent -= SetScrollSpeed;
         _eventManager.GameStateEvent -= ChangeScoreState;
-        _eventManager.PauseEvent -= Pause;
         DOTween.Kill(this);
     }
     #endregion
@@ -79,13 +77,14 @@ public class ScoreManager : MonoBehaviour, IGlobalScroll
         {
             scorePanel.SetActive(true);
             _updateManager.GlobalFixedUpdateEvent += LocalFixedUpdateScore;
+            _eventManager.PauseEvent += Pause;
         }
         else
         {
             _updateManager.GlobalFixedUpdateEvent -= LocalFixedUpdateScore;
             _updateManager.GlobalFixedUpdateEvent -= LocalFixedUpdateHighScore;
-            _eventManager.ResetScrollingSpeedEvent -= SetScrollSpeed;
             SaveHighScore();
+            _eventManager.PauseEvent -= Pause;
         }
     }
 

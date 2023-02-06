@@ -13,6 +13,7 @@ public class GlobalSpeedController : MonoBehaviour
     private float _minScrollSpeed;
     private float _deltaSpeedAngle;
     private float _deltaCosine;
+    private float _speedReduction;
 
     [Inject] private readonly PlayerMovement _playerMovement;
     [Inject] private readonly PlayerColor _playerColor;
@@ -23,10 +24,12 @@ public class GlobalSpeedController : MonoBehaviour
     {
         _eventManager.InitializeSpeedEvent += InitializeSpeedParameters;
         _eventManager.CalculateSpeedEvent += UpdateSpeedValues;
+        _eventManager.ProceedGameEvent += Proceed;
     }
     private void OnDisable()
     {
         _eventManager.CalculateSpeedEvent -= UpdateSpeedValues;
+        _eventManager.ProceedGameEvent -= Proceed;
     }
     #endregion
 
@@ -41,7 +44,20 @@ public class GlobalSpeedController : MonoBehaviour
         ScrollSpeed = _globalSpeed * Mathf.Cos(initialAngle * Mathf.Deg2Rad);
 
         ShareSpeedChanges();
+        _eventManager.SwitchGameState(true);
         _eventManager.InitializeSpeedEvent -= InitializeSpeedParameters;
+    }
+
+    private void Proceed()
+    {
+        float currentReduction, speedRatio = _minScrollSpeed / ScrollSpeed;
+        currentReduction = speedRatio > _speedReduction ? speedRatio : _speedReduction;
+        _playerSpeed *= currentReduction;
+        _globalSpeed *= currentReduction;
+        ScrollSpeed *= currentReduction;
+        ShareSpeedChanges();
+        _eventManager.CalculateSpeedEvent += UpdateSpeedValues;
+        _eventManager.SwitchGameState(true);
     }
 
     private void UpdateSpeedValues(Func<float, float> calculate, bool reflect)
@@ -51,7 +67,7 @@ public class GlobalSpeedController : MonoBehaviour
         {
             _eventManager.CalculateSpeedEvent -= UpdateSpeedValues;
             _eventManager.UpdateScrollingSpeed(_minScrollSpeed);
-            _eventManager.EliminatePlayer();
+            _eventManager.SwitchGameState(false);
             return;
         }
         ScrollSpeed = Mathf.Clamp(_calculatedScrollSpeed, _minScrollSpeed, _maxScrollSpeed);
@@ -88,6 +104,7 @@ public class GlobalSpeedController : MonoBehaviour
 
         _deltaSpeedAngle = initConfig.MinDeflectionAngle;
         _deltaCosine = Mathf.Cos(_deltaSpeedAngle * Mathf.Deg2Rad);
+        _speedReduction = initConfig.SpeedReductionCoefficient;
     }
 }
 

@@ -5,7 +5,6 @@ using Zenject;
 
 public class Reloader : MonoBehaviour
 {
-    [SerializeField] private RectTransform reloadArea;
     [SerializeField] private Button restartButton;
 
     [Inject] private readonly GlobalEventManager _eventManager;
@@ -29,15 +28,16 @@ public class Reloader : MonoBehaviour
     {
         if (isActive)
         {
+            _updateManager.GlobalUpdateEvent -= LocalUpdate;
             restartButton.gameObject.SetActive(true);
             restartButton.onClick.AddListener(ReloadScene);
             _eventManager.PauseEvent += Pause;
         }
         else
         {
+            _updateManager.GlobalUpdateEvent += LocalUpdate;
             restartButton.onClick.RemoveListener(ReloadScene);
             restartButton.gameObject.SetActive(false);
-            _updateManager.GlobalUpdateEvent += LocalUpdate;
             _eventManager.PauseEvent -= Pause;
         }
     }
@@ -54,6 +54,10 @@ public class Reloader : MonoBehaviour
         {
             ReloadScene();
         }
+        if (Input.GetMouseButtonUp(0) && _validator.ValidateRewardInput(Input.mousePosition))
+        {
+            _eventManager.ProceedGame();
+        }
     }
 #endif
 
@@ -63,6 +67,10 @@ public class Reloader : MonoBehaviour
         if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Ended && _validator.ValidateReplayInput(Input.GetTouch(0).position))
         {
             ReloadScene();
+        }
+        if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Ended && _validator.ValidateRewardInput(Input.GetTouch(0).position))
+        {
+            _eventManager.ProceedGame();
         }
     }
 #endif

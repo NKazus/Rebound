@@ -11,7 +11,7 @@ public class SpeedValueColor : ObjectColor
         objectMaterial.SetTexture("_MainTex", image.mainTexture);
         objectMaterial.SetTexture("_AlphaTex", alphaTexture);
         objectMaterial.SetFloat("_GlowValue", initialGlowValue);
-        image.material = objectMaterial;
+        image.material = objectMaterial;      
     }
 
     public override void SetColor(float value)

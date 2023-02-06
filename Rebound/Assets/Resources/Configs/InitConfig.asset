@@ -16,3 +16,4 @@ MonoBehaviour:
   maxScrollSpeed: 15
   maxInitialAngle: 75
   minDeflectionAngle: 10
+  speedReductionCoefficient: 0.75
